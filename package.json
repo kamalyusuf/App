@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "shawarma:dev": "yarn workspace @app/shawarma dev",
+    "plantain:dev": "yarn workspace @app/plantain dev",
+    "water:build": "yarn workspace @app/water build",
+    "shawarma:build": "yarn workspace @app/shawarma build",
+    "plantain:build": "yarn workspace @app/plantain build",
+    "shawarma:test": "yarn workspace @app/shawarma test:ci"
+  }
+}
