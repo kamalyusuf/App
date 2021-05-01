@@ -1,17 +1,18 @@
+import "./config/passport";
+import "express-async-errors";
+
 import { BullMQAdapter, router, setQueues } from "bull-board";
 import connectRedis from "connect-redis";
 import express, { Application } from "express";
-import "express-async-errors";
 import session from "express-session";
 import passport from "passport";
-import "./config/passport";
+
 import { emailQueue } from "./lib/emailQueue";
 import { NotFoundError } from "./lib/errors/NotFoundError";
 import { redis } from "./lib/redis";
 import { IUser } from "./lib/types";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { authRoutes } from "./routes/auth";
-import { SESSION_NAME, SESSION_SECRET } from "./utils/constants";
 
 if (process.env.NODE_ENV !== "test") {
   setQueues([new BullMQAdapter(emailQueue.queue!)]);
@@ -37,8 +38,8 @@ app.use(
       disableTouch: true,
       prefix: "app:session::"
     }),
-    name: SESSION_NAME,
-    secret: SESSION_SECRET,
+    name: process.env.SESSION_NAME as string,
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
