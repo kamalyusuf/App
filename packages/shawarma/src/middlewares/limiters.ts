@@ -13,8 +13,8 @@ export const signupLimiter = rateLimit({
   }),
   windowMs: signupDuration,
   max: () => {
-    if (process.env.NODE_ENV === "test") {
-      return 100;
+    if (process.env.NODE_ENV !== "production") {
+      return 1000;
     }
     return 5;
   },
@@ -37,7 +37,7 @@ export const resetPasswordLimiter = rateLimit({
   }),
   windowMs: resetPasswordDuration,
   max: () => {
-    if (process.env.NODE_ENV === "test") {
+    if (process.env.NODE_ENV !== "production") {
       return 100;
     }
     return 5;

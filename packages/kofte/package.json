@@ -9,17 +9,19 @@
     "start": "next start"
   },
   "dependencies": {
+    "@app/water": "1.0.0",
     "@chakra-ui/react": "^1.6.0",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.3.0",
     "axios": "^0.21.1",
+    "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
     "next": "10.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.2.0",
     "sass": "^1.32.12",
-    "@app/water": "1.0.0"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@types/node": "^15.0.1",

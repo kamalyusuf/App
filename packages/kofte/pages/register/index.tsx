@@ -3,13 +3,8 @@ import { NextPage } from "next";
 import React from "react";
 import { RegisterForm } from "../../components/Forms";
 import { Card, Link } from "../../components/UI";
-import { ICredentials } from "@app/water";
 
 const Register: NextPage = () => {
-  const onSubmit = ({ email, password }: ICredentials) => {
-    console.log({ email, password });
-  };
-
   return (
     <Box
       bg={useColorModeValue("gray.50", "inherit")}
@@ -26,7 +21,7 @@ const Register: NextPage = () => {
           <Link href="/login" text="Sign in" />
         </Text>
         <Card>
-          <RegisterForm onSubmit={onSubmit} />
+          <RegisterForm />
         </Card>
       </Box>
     </Box>

@@ -5,6 +5,7 @@ import connectRedis from "connect-redis";
 import express, { Application } from "express";
 import session from "express-session";
 import passport from "passport";
+import cors from "cors";
 
 import { NotFoundError } from "./lib/errors/NotFoundError";
 import { redis } from "./lib/redis";
@@ -23,6 +24,7 @@ const app: Application = express();
 const RedisStore = connectRedis(session);
 
 app.set("trust proxy", 1);
+app.use(cors({ origin: process.env.KOFTE_URL, credentials: true }));
 app.use(express.json());
 
 app.use(

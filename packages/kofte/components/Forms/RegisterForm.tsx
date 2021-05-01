@@ -1,49 +1,72 @@
-import {
-  Button,
-  chakra,
-  FormControl,
-  FormLabel,
-  Input,
-  Stack
-} from "@chakra-ui/react";
-import React, { useState } from "react";
-import { PasswordField } from "../UI";
-import { ICredentials } from "@app/water";
+import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
+import React from "react";
+import { InputErrorMessage, PasswordField } from "../UI";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as yup from "yup";
+import { api } from "../../lib";
+import { IResponseError } from "@app/water";
 
-interface Props {
-  onSubmit: (credentials: ICredentials) => void;
-}
+const transformErrors = (errors: Required<IResponseError>[]) => {
+  const error: Record<string, string> = {};
+  errors.forEach(({ message, field }) => {
+    error[field] = message;
+  });
+  return error;
+};
 
-export const RegisterForm: React.FC<Props> = ({ onSubmit }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const validationSchema = yup.object({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required")
+});
 
+export const RegisterForm: React.FC = () => {
   return (
-    <chakra.form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit({ email, password });
-      }}
-    >
-      <Stack>
-        <FormControl>
-          <FormLabel>Email address</FormLabel>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-            required
-          />
-        </FormControl>
-        <PasswordField
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button type="submit" colorScheme="blue" size="lg" fontSize="md">
-          Create my account
-        </Button>
-      </Stack>
-    </chakra.form>
+    <>
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        onSubmit={async (values, { setErrors }) => {
+          console.log("onSubmit values", values);
+          // await sleep(3000);
+
+          try {
+            await api.post("/auth/signup", values);
+          } catch (e) {
+            setErrors(transformErrors(e.response.data.errors));
+          }
+        }}
+        // validationSchema={validationSchema}
+        validateOnMount
+      >
+        {({ isSubmitting, isValid }) => (
+          <Form>
+            <Stack spacing={8}>
+              <Field name="email">
+                {({ field, form }: any) => (
+                  <FormControl>
+                    <FormLabel>Email address</FormLabel>
+                    <Input {...field} type="email" />
+                    <ErrorMessage name="email" component={InputErrorMessage} />
+                  </FormControl>
+                )}
+              </Field>
+              <PasswordField />
+              <Button
+                type="submit"
+                colorScheme="blue"
+                size="lg"
+                fontSize="md"
+                disabled={!isValid || isSubmitting}
+                isLoading={isSubmitting}
+              >
+                Create my account
+              </Button>
+            </Stack>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };

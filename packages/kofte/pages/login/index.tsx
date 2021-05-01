@@ -2,14 +2,9 @@ import { NextPage } from "next";
 import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import { Card, Link } from "../../components/UI";
-import { ICredentials } from "@app/water";
 import { LoginForm } from "../../components/Forms";
 
 const Login: NextPage = () => {
-  const onSubmit = ({ email, password }: ICredentials) => {
-    console.log({ email, password });
-  };
-
   return (
     <Box
       bg={useColorModeValue("gray.50", "inherit")}
@@ -26,7 +21,7 @@ const Login: NextPage = () => {
           <Link href="/register" text="Sign up" />
         </Text>
         <Card>
-          <LoginForm onSubmit={onSubmit} />
+          <LoginForm />
         </Card>
       </Box>
     </Box>

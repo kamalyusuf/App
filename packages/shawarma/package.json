@@ -7,7 +7,8 @@
     "start:dev": "ts-node-dev --respawn --transpile-only --rs src/index.ts",
     "build": "rimraf ./dist && tsc",
     "test": "jest --watchAll --no-cache",
-    "test:ci": "jest"
+    "test:ci": "jest",
+    "gen-env-types": "npx gen-env-types .env -o src/typings/env.d.ts -e ."
   },
   "jest": {
     "preset": "ts-jest",
@@ -20,6 +21,7 @@
     "@app/water": "1.0.0",
     "argon2": "^0.27.2",
     "connect-redis": "^5.1.0",
+    "cors": "^2.8.5",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "@types/connect-redis": "^0.0.16",
+    "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
     "@types/express-rate-limit": "^5.1.1",
     "@types/express-session": "^1.17.3",

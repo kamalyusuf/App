@@ -12,3 +12,8 @@ export interface ICredentials {
   email: string;
   password: string;
 }
+
+export interface IResponseError {
+  message: string;
+  field?: string;
+}

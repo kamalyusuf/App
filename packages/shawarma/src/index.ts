@@ -19,7 +19,8 @@ async function main() {
     "MONGO_URL",
     "REDIS_URL",
     "SESSION_SECRET",
-    "SESSION_NAME"
+    "SESSION_NAME",
+    "KOFTE_URL"
   ]);
 
   await mongodb.connect();

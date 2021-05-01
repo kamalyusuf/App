@@ -12,15 +12,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useRef } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import NextLink from "next/link";
+import { useField, ErrorMessage } from "formik";
+import { InputErrorMessage } from "../InputErrorMessage";
 
-interface Props {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export const PasswordField = ({ value, onChange }: Props) => {
+export const PasswordField: React.FC = () => {
   const { isOpen, onToggle } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [field] = useField("password");
 
   const onClickReveal = () => {
     onToggle();
@@ -38,14 +37,16 @@ export const PasswordField = ({ value, onChange }: Props) => {
     <FormControl id="password">
       <Flex justify="space-between">
         <FormLabel>Password</FormLabel>
-        <Box
-          as="a"
-          color={mode("blue.600", "blue.200")}
-          fontWeight="semibold"
-          fontSize="sm"
-        >
-          Forgot Password?
-        </Box>
+        <NextLink href="/login/forgot">
+          <Box
+            as="a"
+            color={mode("blue.600", "blue.200")}
+            fontWeight="semibold"
+            fontSize="sm"
+          >
+            Forgot Password?
+          </Box>
+        </NextLink>
       </Flex>
       <InputGroup>
         <InputRightElement>
@@ -58,14 +59,14 @@ export const PasswordField = ({ value, onChange }: Props) => {
           />
         </InputRightElement>
         <Input
-          name="password"
-          value={value}
-          onChange={onChange}
+          id={field.name}
+          {...field}
           ref={inputRef}
           type={isOpen ? "text" : "password"}
-          required
+          // required
         />
       </InputGroup>
+      <ErrorMessage name="password" component={InputErrorMessage} />
     </FormControl>
   );
 };
