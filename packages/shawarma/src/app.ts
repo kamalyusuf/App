@@ -1,22 +1,16 @@
 import "./config/passport";
 import "express-async-errors";
 
-import { BullMQAdapter, router, setQueues } from "bull-board";
 import connectRedis from "connect-redis";
 import express, { Application } from "express";
 import session from "express-session";
 import passport from "passport";
 
-import { emailQueue } from "./lib/emailQueue";
 import { NotFoundError } from "./lib/errors/NotFoundError";
 import { redis } from "./lib/redis";
 import { IUser } from "./lib/types";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { authRoutes } from "./routes/auth";
-
-if (process.env.NODE_ENV !== "test") {
-  setQueues([new BullMQAdapter(emailQueue.queue!)]);
-}
 
 declare global {
   namespace Express {
@@ -55,7 +49,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/queues", router);
 app.use("/api/auth", authRoutes);
 
 app.use(() => {

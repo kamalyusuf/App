@@ -6,7 +6,7 @@
     ]
   },
   "scripts": {
-    "start:dev": "lerna run start:dev --parallel --scope={@app/shawarma,@app/plantain}",
+    "start:dev": "lerna run start:dev --parallel --scope={@app/shawarma,@app/plantain,@app/kofte}",
     "shawarma:dev": "yarn workspace @app/shawarma dev",
     "plantain:dev": "yarn workspace @app/plantain dev",
     "build": "lerna run build --scope={@app/shawarma,@app/plantain,@app/water}",

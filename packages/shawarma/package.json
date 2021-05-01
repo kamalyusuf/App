@@ -19,7 +19,6 @@
   "dependencies": {
     "@app/water": "1.0.0",
     "argon2": "^0.27.2",
-    "bull-board": "^1.5.1",
     "connect-redis": "^5.1.0",
     "dotenv-safe": "^8.2.0",
     "express": "^4.17.1",
