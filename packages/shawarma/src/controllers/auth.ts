@@ -3,13 +3,9 @@ import { RequestHandler } from "express";
 import createError from "http-errors";
 import passport from "passport";
 import { IVerifyOptions } from "passport-local";
-import { emailQueue } from "../lib/emailQueue";
-import { BadRequestError } from "../lib/errors/BadRequestError";
-import { NotFoundError } from "../lib/errors/NotFoundError";
-import { redis } from "../lib/redis";
+import { BadRequestError, emailQueue, NotFoundError, redis } from "../lib";
 import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
-import { SESSION_NAME } from "../utils/constants";
 
 export const signup: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
@@ -64,7 +60,7 @@ export const signout: RequestHandler = (req, res, next) => {
       return next(error);
     }
 
-    res.clearCookie(SESSION_NAME);
+    res.clearCookie(process.env.SESSION_NAME);
     res.send();
   });
 };
