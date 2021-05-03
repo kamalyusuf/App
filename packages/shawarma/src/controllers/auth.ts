@@ -25,7 +25,7 @@ export const signup: RequestHandler = async (req, res, next) => {
   const user = new User({ email, password });
   await user.save();
 
-  const token = randomBytes(32).toString("hex");
+  const token = randomBytes(8).toString("hex");
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
   await redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24 * 7);
@@ -94,10 +94,9 @@ export const me: RequestHandler = async (req, res) => {
 };
 
 export const verify: RequestHandler = async (req, res) => {
-  const token = req.query.token as string;
-  const email = req.query.email as string;
+  const { token, email } = req.body;
   if (!token || !email) {
-    throw new BadRequestError("Invalid token");
+    throw new BadRequestError("Invalid email or token");
   }
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
@@ -122,7 +121,7 @@ export const verify: RequestHandler = async (req, res) => {
   user.set({ email_verified: true });
   await Promise.all([user.save(), redis.del(key)]);
 
-  res.send();
+  res.send(user);
 };
 
 export const forgotPassword: RequestHandler = async (req, res) => {

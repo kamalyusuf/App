@@ -3,6 +3,7 @@ import { Box, Text, Heading, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
 import { Card, Link } from "../../components/UI";
 import { LoginForm } from "../../components/Forms";
+import { withNoAuth } from "../../hocs/withNoAuth";
 
 const Login: NextPage = () => {
   return (
@@ -28,4 +29,4 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default withNoAuth(Login);

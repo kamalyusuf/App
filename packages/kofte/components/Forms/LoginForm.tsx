@@ -11,6 +11,7 @@ import { transformErrors } from "./RegisterForm";
 export const LoginForm: React.FC = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const redirect = router.asPath.split("redirect=")[1];
 
   return (
     <>
@@ -20,7 +21,7 @@ export const LoginForm: React.FC = () => {
           try {
             const { data } = await api.post<IUser>("/auth/signin", values);
             queryClient.setQueryData("/auth/me", () => data);
-            router.push("/profile");
+            router.replace(redirect ? redirect : "/profile");
           } catch (e) {
             setErrors(transformErrors(e.response.data.errors));
           }

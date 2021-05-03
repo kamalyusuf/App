@@ -2,7 +2,8 @@ import { NextPage } from "next";
 import React from "react";
 import { Container } from "../../components/Container";
 import { NavBarLayout } from "../../components/Layouts";
-import { useMeQuery } from "../../hooks/queries";
+import { withAuth } from "../../hocs/withAuth";
+import { useMeQuery } from "../../hooks";
 
 const Profile: NextPage = () => {
   const { me } = useMeQuery();
@@ -16,4 +17,4 @@ const Profile: NextPage = () => {
   );
 };
 
-export default Profile;
+export default withAuth(Profile);

@@ -32,7 +32,7 @@ router.post("/signout", isAuthenticated, AuthController.signout);
 
 router.get("/me", AuthController.me);
 
-router.get("/verify", AuthController.verify);
+router.post("/verify", AuthController.verify);
 
 router.post(
   "/verify/re",

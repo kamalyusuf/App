@@ -51,6 +51,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/api/ping", (_, res) => res.send("pong"));
 app.use("/api/auth", authRoutes);
 
 app.use(() => {

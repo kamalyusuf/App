@@ -6,17 +6,37 @@ import {
   Icon,
   Stack,
   Text,
-  useColorModeValue
+  useColorModeValue,
+  useToast
 } from "@chakra-ui/react";
 import React from "react";
-import { useMeQuery } from "../../hooks/queries";
+import { useMeQuery, useResendVerificationEmailMutation } from "../../hooks";
 
 export const VerifyEmailBanner: React.FC = () => {
   const { me } = useMeQuery();
+  const { mutateAsync, isLoading } = useResendVerificationEmailMutation();
+  const toast = useToast();
 
   if (!me || me.email_verified) {
     return null;
   }
+
+  const resendVerificationEmail = async () => {
+    await mutateAsync(
+      {},
+      {
+        onSuccess: (data) => {
+          toast({
+            description: data.message,
+            status: "success",
+            duration: 2500,
+            isClosable: true,
+            position: "top-right"
+          });
+        }
+      }
+    );
+  };
 
   return (
     <Box as="section">
@@ -42,6 +62,8 @@ export const VerifyEmailBanner: React.FC = () => {
           variant="outline"
           borderColor="whiteAlpha.400"
           px={6}
+          isLoading={isLoading}
+          onClick={resendVerificationEmail}
         >
           Resend email
         </Button>

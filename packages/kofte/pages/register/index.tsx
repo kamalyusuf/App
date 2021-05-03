@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import React from "react";
 import { RegisterForm } from "../../components/Forms";
 import { Card, Link } from "../../components/UI";
+import { withNoAuth } from "../../hocs/withNoAuth";
 
 const Register: NextPage = () => {
   return (
@@ -28,4 +29,4 @@ const Register: NextPage = () => {
   );
 };
 
-export default Register;
+export default withNoAuth(Register);
