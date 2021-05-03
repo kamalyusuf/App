@@ -11,7 +11,10 @@ export const signup: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (await User.exists({ email })) {
-    throw new BadRequestError("Email already in use");
+    throw new BadRequestError({
+      message: "Email already in use",
+      field: "email"
+    });
   }
 
   const user = new User({ email, password });
@@ -41,6 +44,10 @@ export const signin: RequestHandler = (req, res, next) => {
       }
 
       if (!user) {
+        throw new BadRequestError({
+          message: info.message,
+          field: info.field
+        });
         return next(createError(info.status, info.message));
       }
 
@@ -120,10 +127,9 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
   await Promise.all([
     user.save(),
-    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24)
+    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24),
+    emailQueue.queueForgotPassword({ email: user.email, token })
   ]);
-
-  await emailQueue.queueForgotPassword({ email: user.email, token });
 
   res.send({
     message: `An email has been sent to ${user.email} with further instructions`
@@ -132,7 +138,7 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
 export const resetPassword: RequestHandler = async (req, res) => {
   const token = req.params.token;
-  const { password } = req.body;
+  const { password }: { password: string } = req.body;
 
   const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
   const userId = await redis.get(key);

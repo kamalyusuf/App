@@ -24,8 +24,8 @@ export const toastSlice = createSlice({
       state.toasts = state.toasts.filter(
         (toast) => toast.message !== payload.message
       );
-      state.toasts.unshift({ id: v4(), ...payload });
-      // state.toasts.push({ id: v4(), ...payload });
+      // state.toasts.unshift({ id: v4(), ...payload });
+      state.toasts.push({ id: v4(), ...payload });
     },
     clear: (state, { payload }: PayloadAction<string>) => {
       state.toasts = state.toasts.filter((toast) => toast.id !== payload);

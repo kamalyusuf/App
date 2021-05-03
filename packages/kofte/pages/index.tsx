@@ -1,15 +1,18 @@
+import { Box } from "@chakra-ui/react";
 import { NextPage } from "next";
-import { useQuery } from "react-query";
+import React from "react";
+import { Container } from "../components/Container";
+import { NavBarLayout } from "../components/Layouts";
 
 const Home: NextPage = () => {
-  const { status, data, error, isFetching } = useQuery("/auth/me");
-
-  console.log({ status, data, error, isFetching });
-
   return (
-    <div>
-      <h1>I am Home</h1>
-    </div>
+    <NavBarLayout>
+      <Container>
+        <Box>
+          <h1>I am Home</h1>
+        </Box>
+      </Container>
+    </NavBarLayout>
   );
 };
 

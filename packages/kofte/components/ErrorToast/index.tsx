@@ -7,30 +7,18 @@ export const ErrorToast: React.FC = () => {
   const { toasts, clear } = useToastStore();
 
   useEffect(() => {
-    if (!toasts.length) return;
-
-    toast({
-      title: toasts[0].message,
-      status: "error",
-      duration: 2000,
-      isClosable: true,
-      position: "top-right",
-      onCloseComplete: () => {
-        clear(toasts[0].id);
-      }
+    toasts.forEach((t) => {
+      toast({
+        title: t.message,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+        position: "top-right",
+        onCloseComplete: () => {
+          clear(t.id);
+        }
+      });
     });
-    // toasts.forEach((t) => {
-    //   toast({
-    //     title: t.message,
-    //     status: "error",
-    //     duration: 2000,
-    //     isClosable: true,
-    //     position: "top-right",
-    //     onCloseComplete: () => {
-    //       clear(t.id);
-    //     }
-    //   });
-    // });
   }, [toasts]);
 
   return null;

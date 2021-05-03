@@ -5,6 +5,7 @@ import { User } from "../models/User";
 declare module "passport-local" {
   interface IVerifyOptions {
     status: number;
+    field: string;
   }
 }
 
@@ -31,13 +32,18 @@ passport.use(
         const user = await User.findOne({ email }).select("+password");
 
         if (!user) {
-          return done(null, false, { message: "User not found", status: 404 });
+          return done(null, false, {
+            message: "User not found",
+            status: 404,
+            field: "email"
+          });
         }
 
         if (!(await user.comparePassword(password))) {
           return done(null, false, {
             message: "Incorrect password",
-            status: 422
+            status: 401,
+            field: "password"
           });
         }
 

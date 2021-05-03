@@ -12,7 +12,8 @@
     "build": "lerna run build --scope={@app/shawarma,@app/plantain,@app/water}",
     "build:water": "lerna run build --scope=@app/water",
     "test": "lerna run test",
-    "gen-env-types": "lerna run gen-env-types --scope=@app/shawarma"
+    "shawarma:gen-env-types": "lerna run gen-env-types --scope=@app/shawarma",
+    "plantain:gen-env-types": "lerna run gen-env-types --scope=@app/plantain"
   },
   "name": "App",
   "devDependencies": {

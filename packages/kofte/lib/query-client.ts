@@ -39,6 +39,7 @@ export const queryClient = new QueryClient({
       retry: false,
       staleTime: 60 * 1000 * 5,
       queryFn: defaultQueryFn,
+      refetchOnWindowFocus: false,
       onError
     },
     mutations: {

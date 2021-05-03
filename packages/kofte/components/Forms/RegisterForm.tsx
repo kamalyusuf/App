@@ -4,9 +4,11 @@ import { InputErrorMessage, PasswordField } from "../UI";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { api } from "../../lib";
-import { IResponseError } from "@app/water";
+import { IResponseError, IUser } from "@app/water";
+import { useQueryClient } from "react-query";
+import { useRouter } from "next/router";
 
-const transformErrors = (errors: Required<IResponseError>[]) => {
+export const transformErrors = (errors: Required<IResponseError>[]) => {
   const error: Record<string, string> = {};
   errors.forEach(({ message, field }) => {
     error[field] = message;
@@ -23,22 +25,25 @@ const validationSchema = yup.object({
 });
 
 export const RegisterForm: React.FC = () => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   return (
     <>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          console.log("onSubmit values", values);
-          // await sleep(3000);
-
           try {
-            await api.post("/auth/signup", values);
+            const { data } = await api.post<IUser>("/auth/signup", values);
+            queryClient.setQueryData("/auth/me", () => data);
+            router.push("/profile");
           } catch (e) {
             setErrors(transformErrors(e.response.data.errors));
           }
         }}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
         validateOnMount
+        validateOnChange
       >
         {({ isSubmitting, isValid }) => (
           <Form>
