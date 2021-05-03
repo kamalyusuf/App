@@ -11,10 +11,12 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    lowercase: true
   },
   password: {
     type: String,
+    select: false,
     required: true
   },
   email_verified: {
@@ -27,7 +29,10 @@ const UserSchema = new Schema({
   }
 });
 
-UserSchema.set("timestamps", true);
+UserSchema.set("timestamps", {
+  createdAt: "created_at",
+  updatedAt: "updated_at"
+});
 UserSchema.set("toJSON", {
   transform(_: any, ret: any) {
     ret.id = ret._id;
@@ -42,8 +47,7 @@ UserSchema.pre("save", async function (next) {
     return next();
   }
 
-  const hash = await argon2.hash(this.get("password"));
-  this.set("password", hash);
+  this.set({ password: await argon2.hash(this.get("password")) });
   next();
 });
 

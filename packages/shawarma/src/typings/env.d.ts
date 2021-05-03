@@ -5,5 +5,7 @@ declare namespace NodeJS {
     MONGO_URL: string;
     REDIS_URL: string;
     SESSION_SECRET: string;
+    SESSION_NAME: string;
+    KOFTE_URL: string;
   }
 }

@@ -25,7 +25,7 @@ async function init() {
     "SENDGRID_API_KEY",
     "REDIS_URL",
     "SHAWARMA_URL",
-    "WEB_URL"
+    "KOFTE_URL"
   ]);
 
   new Worker(

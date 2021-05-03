@@ -1,21 +1,17 @@
-import { BullMQAdapter, router, setQueues } from "bull-board";
+import "./config/passport";
+import "express-async-errors";
+
 import connectRedis from "connect-redis";
 import express, { Application } from "express";
-import "express-async-errors";
 import session from "express-session";
 import passport from "passport";
-import "./config/passport";
-import { emailQueue } from "./lib/emailQueue";
+import cors from "cors";
+
 import { NotFoundError } from "./lib/errors/NotFoundError";
 import { redis } from "./lib/redis";
 import { IUser } from "./lib/types";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { authRoutes } from "./routes/auth";
-import { SESSION_NAME, SESSION_SECRET } from "./utils/constants";
-
-if (process.env.NODE_ENV !== "test") {
-  setQueues([new BullMQAdapter(emailQueue.queue!)]);
-}
 
 declare global {
   namespace Express {
@@ -28,6 +24,7 @@ const app: Application = express();
 const RedisStore = connectRedis(session);
 
 app.set("trust proxy", 1);
+app.use(cors({ origin: process.env.KOFTE_URL, credentials: true }));
 app.use(express.json());
 
 app.use(
@@ -37,8 +34,8 @@ app.use(
       disableTouch: true,
       prefix: "app:session::"
     }),
-    name: SESSION_NAME,
-    secret: SESSION_SECRET,
+    name: process.env.SESSION_NAME as string,
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -54,7 +51,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/queues", router);
+app.get("/api/ping", (_, res) => res.send("pong"));
 app.use("/api/auth", authRoutes);
 
 app.use(() => {

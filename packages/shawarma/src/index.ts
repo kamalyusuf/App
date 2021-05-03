@@ -13,7 +13,15 @@ import { exitHandler } from "./utils/exitHandler";
 let _server: Server;
 
 async function main() {
-  checkEnv([ "PORT", "NODE_ENV", "MONGO_URL", "REDIS_URL", "SESSION_SECRET" ]);
+  checkEnv([
+    "PORT",
+    "NODE_ENV",
+    "MONGO_URL",
+    "REDIS_URL",
+    "SESSION_SECRET",
+    "SESSION_NAME",
+    "KOFTE_URL"
+  ]);
 
   await mongodb.connect();
   _server = await start(app);

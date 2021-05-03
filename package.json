@@ -6,11 +6,17 @@
     ]
   },
   "scripts": {
+    "start:dev": "lerna run start:dev --parallel --scope={@app/shawarma,@app/plantain,@app/kofte}",
     "shawarma:dev": "yarn workspace @app/shawarma dev",
     "plantain:dev": "yarn workspace @app/plantain dev",
-    "water:build": "yarn workspace @app/water build",
-    "shawarma:build": "yarn workspace @app/shawarma build",
-    "plantain:build": "yarn workspace @app/plantain build",
-    "shawarma:test": "yarn workspace @app/shawarma test:ci"
+    "build": "lerna run build --scope={@app/shawarma,@app/plantain,@app/water}",
+    "build:water": "lerna run build --scope=@app/water",
+    "test": "lerna run test",
+    "shawarma:gen-env-types": "lerna run gen-env-types --scope=@app/shawarma",
+    "plantain:gen-env-types": "lerna run gen-env-types --scope=@app/plantain"
+  },
+  "name": "App",
+  "devDependencies": {
+    "lerna": "^3.22.1"
   }
 }

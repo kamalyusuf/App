@@ -5,17 +5,17 @@ import ejs from "ejs";
 import path from "path";
 import { htmlToText } from "html-to-text";
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY2);
 
 export class EmailService {
   static async sendVerificationEmail({ email, token }: IEmailTokenInput) {
-    const link = `${process.env.SHAWARMA_URL}/api/auth/verify?token=${token}&email=${email}`;
+    const link = `${process.env.KOFTE_URL}/verify?token=${token}&email=${email}`;
     const p = path.join(__dirname, "..", "templates", "email-verification.ejs");
 
     const html = await ejs.renderFile(p, { email, link });
     const message = {
       to: email,
-      from: `Populate here <${process.env.SENDGRID_EMAIL}>`,
+      from: `<${process.env.SENDGRID_EMAIL2}>`,
       subject: "Verify your email",
       html,
       text: htmlToText(html)

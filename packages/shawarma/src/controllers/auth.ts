@@ -1,30 +1,34 @@
 import { randomBytes } from "crypto";
 import { RequestHandler } from "express";
-import createError from "http-errors";
 import passport from "passport";
 import { IVerifyOptions } from "passport-local";
-import { emailQueue } from "../lib/emailQueue";
-import { BadRequestError } from "../lib/errors/BadRequestError";
-import { NotFoundError } from "../lib/errors/NotFoundError";
-import { redis } from "../lib/redis";
+import {
+  BadRequestError,
+  emailQueue,
+  NotFoundError,
+  redis,
+  NotAuthorizedError
+} from "../lib";
 import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
-import { SESSION_NAME } from "../utils/constants";
 
 export const signup: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (await User.exists({ email })) {
-    throw new BadRequestError("Email already in use");
+    throw new BadRequestError({
+      message: "Email already in use",
+      field: "email"
+    });
   }
 
   const user = new User({ email, password });
   await user.save();
 
-  const token = randomBytes(32).toString("hex");
+  const token = randomBytes(8).toString("hex");
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
-  await redis.set(key, user.id);
+  await redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24 * 7);
 
   await emailQueue.queueEmailVerification({ email: user.email, token });
 
@@ -45,7 +49,18 @@ export const signin: RequestHandler = (req, res, next) => {
       }
 
       if (!user) {
-        return next(createError(info.status, info.message));
+        switch (info.status) {
+          case 404:
+            throw new NotFoundError({
+              message: info.message,
+              field: info.field
+            });
+          case 401:
+            throw new NotAuthorizedError({
+              message: info.message,
+              field: info.field
+            });
+        }
       }
 
       req.logIn(user, (error) => {
@@ -64,7 +79,7 @@ export const signout: RequestHandler = (req, res, next) => {
       return next(error);
     }
 
-    res.clearCookie(SESSION_NAME);
+    res.clearCookie(process.env.SESSION_NAME);
     res.send();
   });
 };
@@ -79,10 +94,9 @@ export const me: RequestHandler = async (req, res) => {
 };
 
 export const verify: RequestHandler = async (req, res) => {
-  const token = req.query.token as string;
-  const email = req.query.email as string;
+  const { token, email } = req.body;
   if (!token || !email) {
-    throw new BadRequestError("Invalid token");
+    throw new BadRequestError("Invalid email or token");
   }
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
@@ -100,10 +114,14 @@ export const verify: RequestHandler = async (req, res) => {
     throw new BadRequestError("Invalid token");
   }
 
+  if (user.email_verified) {
+    throw new BadRequestError("Email address has already been verified");
+  }
+
   user.set({ email_verified: true });
   await Promise.all([user.save(), redis.del(key)]);
 
-  res.send();
+  res.send(user);
 };
 
 export const forgotPassword: RequestHandler = async (req, res) => {
@@ -124,10 +142,9 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
   await Promise.all([
     user.save(),
-    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24)
+    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24),
+    emailQueue.queueForgotPassword({ email: user.email, token })
   ]);
-
-  await emailQueue.queueForgotPassword({ email: user.email, token });
 
   res.send({
     message: `An email has been sent to ${user.email} with further instructions`
@@ -136,7 +153,7 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
 export const resetPassword: RequestHandler = async (req, res) => {
   const token = req.params.token;
-  const { password } = req.body;
+  const { password }: { password: string } = req.body;
 
   const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
   const userId = await redis.get(key);
@@ -158,4 +175,19 @@ export const resetPassword: RequestHandler = async (req, res) => {
   await Promise.all([user.save(), redis.del(key)]);
 
   res.send({ message: "Password reset successful" });
+};
+
+export const resendVerificationEmail: RequestHandler = async (req, res) => {
+  const token = randomBytes(32).toString("hex");
+
+  const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
+
+  await Promise.all([
+    redis.set(key, req.user!.id, "ex", 1000 * 60 * 60 * 24 * 7),
+    emailQueue.queueEmailVerification({ email: req.user!.email, token })
+  ]);
+
+  res.send({
+    message: `Verification link has been sent to ${req.user!.email}`
+  });
 };

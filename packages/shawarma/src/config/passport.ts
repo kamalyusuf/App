@@ -1,14 +1,13 @@
 import passport from "passport";
-import PassportLocal from "passport-local";
+import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../models/User";
 
 declare module "passport-local" {
   interface IVerifyOptions {
-    status: number;
+    status: 401 | 404;
+    field: string;
   }
 }
-
-const LocalStrategy = PassportLocal.Strategy;
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -28,16 +27,21 @@ passport.use(
     { usernameField: "email" },
     async (email, password, done) => {
       try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select("+password");
 
         if (!user) {
-          return done(null, false, { message: "User not found", status: 404 });
+          return done(null, false, {
+            message: "User not found",
+            status: 404,
+            field: "email"
+          });
         }
 
         if (!(await user.comparePassword(password))) {
           return done(null, false, {
             message: "Incorrect password",
-            status: 422
+            status: 401,
+            field: "password"
           });
         }
 

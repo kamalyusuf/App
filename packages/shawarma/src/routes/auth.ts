@@ -1,16 +1,19 @@
 import { Router } from "express";
 import * as AuthController from "../controllers/auth";
-import { checkValidationResult } from "../middlewares/checkValidationResult";
-import { guest } from "../middlewares/guest";
-import { isAuthenticated } from "../middlewares/isAuthenticated";
-import { resetPasswordLimiter, signupLimiter } from "../middlewares/limiters";
-import { checkEmail, checkPassword } from "../middlewares/validation";
+import { generateRateLimiter, generateSpeedLimiter } from "../utils";
+import {
+  checkEmail,
+  checkPassword,
+  guest,
+  isAuthenticated,
+  checkValidationResult
+} from "../middlewares";
 
 const router = Router();
 
 router.post(
   "/signup",
-  signupLimiter,
+  generateRateLimiter({ max: 5, duration: 3600 }),
   guest,
   [checkEmail, checkPassword],
   checkValidationResult,
@@ -29,9 +32,16 @@ router.post("/signout", isAuthenticated, AuthController.signout);
 
 router.get("/me", AuthController.me);
 
-router.get("/verify", AuthController.verify);
+router.post("/verify", AuthController.verify);
 
-router.use(resetPasswordLimiter);
+router.post(
+  "/verify/re",
+  generateSpeedLimiter({ duration: 900, delayAfter: 2, delayMs: 3000 }),
+  isAuthenticated,
+  AuthController.resendVerificationEmail
+);
+
+router.use(generateRateLimiter({ max: 5, duration: 900 }), isAuthenticated);
 
 router.post(
   "/forgot",
