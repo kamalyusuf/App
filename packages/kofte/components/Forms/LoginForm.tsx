@@ -45,7 +45,7 @@ export const LoginForm: React.FC = () => {
                 colorScheme="blue"
                 size="lg"
                 fontSize="md"
-                disabled={!isValid || isSubmitting || !email || !password}
+                disabled={isSubmitting || !email || !password}
                 isLoading={isSubmitting}
               >
                 Sign in

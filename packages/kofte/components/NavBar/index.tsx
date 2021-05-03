@@ -3,14 +3,15 @@ import React from "react";
 import { Link } from "../UI";
 import NextLink from "next/link";
 import { Container } from "../Container";
-import { useMeQuery } from "../../hooks/queries";
-import { useLogoutMutation } from "../../hooks/mutations";
 import { useQueryClient } from "react-query";
+import { useLogoutMutation, useMeQuery } from "../../hooks";
+import { useRouter } from "next/router";
 
 export const NavBar: React.FC = () => {
   const { me } = useMeQuery();
   const { isLoading, mutateAsync } = useLogoutMutation();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const logout = async () => {
     await mutateAsync(
@@ -18,6 +19,7 @@ export const NavBar: React.FC = () => {
       {
         onSuccess: () => {
           queryClient.resetQueries();
+          router.push("/");
         }
       }
     );
@@ -26,14 +28,27 @@ export const NavBar: React.FC = () => {
   return (
     <Box py={4} bg="gray.50">
       <Container>
-        <Stack align="center" direction="row" justify="space-between">
-          <Stack align="center" direction="row" spacing={32}>
-            <Link text="Home" href="/" fontSize="2xl" />
+        <Stack
+          align="center"
+          direction={{ base: "column", md: "row" }}
+          justify="space-between"
+          spacing={{ base: "3" }}
+        >
+          <Stack
+            align="center"
+            direction={{ base: "column", md: "row" }}
+            spacing={{ base: "3", md: "32" }}
+          >
+            <Link text="Home" href="/" fontSize="xl" />
             <Stack align="center" direction="row">
               {me && <Link text="Profile" href="/profile" fontSize="xl" />}
             </Stack>
           </Stack>
-          <Stack align="center" direction="row" spacing={8}>
+          <Stack
+            align="center"
+            direction={{ base: "column", md: "row" }}
+            // spacing={8}
+          >
             {!me ? (
               <>
                 <Link text="Login" href="/login" fontSize="xl" />

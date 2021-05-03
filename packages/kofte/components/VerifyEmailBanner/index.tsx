@@ -41,6 +41,7 @@ export const VerifyEmailBanner: React.FC = () => {
           color="white"
           variant="outline"
           borderColor="whiteAlpha.400"
+          px={6}
         >
           Resend email
         </Button>

@@ -2,8 +2,9 @@ import rateLimit from "express-rate-limit";
 import RedisStore from "rate-limit-redis";
 import { redis } from "../lib/redis";
 
-const resetPasswordDuration = 900;
-const signupDuration = 3600;
+// in seconds
+const resetPasswordDuration = 900; // 15 minutes
+const signupDuration = 3600; // 1 hour
 
 export const signupLimiter = rateLimit({
   store: new RedisStore({

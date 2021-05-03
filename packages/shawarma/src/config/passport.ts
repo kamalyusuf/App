@@ -1,15 +1,13 @@
 import passport from "passport";
-import PassportLocal from "passport-local";
+import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../models/User";
 
 declare module "passport-local" {
   interface IVerifyOptions {
-    status: number;
+    status: 401 | 404;
     field: string;
   }
 }
-
-const LocalStrategy = PassportLocal.Strategy;
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

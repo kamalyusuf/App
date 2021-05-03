@@ -1,9 +1,14 @@
 import { randomBytes } from "crypto";
 import { RequestHandler } from "express";
-import createError from "http-errors";
 import passport from "passport";
 import { IVerifyOptions } from "passport-local";
-import { BadRequestError, emailQueue, NotFoundError, redis } from "../lib";
+import {
+  BadRequestError,
+  emailQueue,
+  NotFoundError,
+  redis,
+  NotAuthorizedError
+} from "../lib";
 import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
 
@@ -23,7 +28,7 @@ export const signup: RequestHandler = async (req, res, next) => {
   const token = randomBytes(32).toString("hex");
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
-  await redis.set(key, user.id);
+  await redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24 * 7);
 
   await emailQueue.queueEmailVerification({ email: user.email, token });
 
@@ -44,11 +49,18 @@ export const signin: RequestHandler = (req, res, next) => {
       }
 
       if (!user) {
-        throw new BadRequestError({
-          message: info.message,
-          field: info.field
-        });
-        return next(createError(info.status, info.message));
+        switch (info.status) {
+          case 404:
+            throw new NotFoundError({
+              message: info.message,
+              field: info.field
+            });
+          case 401:
+            throw new NotAuthorizedError({
+              message: info.message,
+              field: info.field
+            });
+        }
       }
 
       req.logIn(user, (error) => {
@@ -101,6 +113,10 @@ export const verify: RequestHandler = async (req, res) => {
 
   if (user.email !== email) {
     throw new BadRequestError("Invalid token");
+  }
+
+  if (user.email_verified) {
+    throw new BadRequestError("Email address has already been verified");
   }
 
   user.set({ email_verified: true });
@@ -160,4 +176,19 @@ export const resetPassword: RequestHandler = async (req, res) => {
   await Promise.all([user.save(), redis.del(key)]);
 
   res.send({ message: "Password reset successful" });
+};
+
+export const resendVerificationEmail: RequestHandler = async (req, res) => {
+  const token = randomBytes(32).toString("hex");
+
+  const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
+
+  await Promise.all([
+    redis.set(key, req.user!.id, "ex", 1000 * 60 * 60 * 24 * 7),
+    emailQueue.queueEmailVerification({ email: req.user!.email, token })
+  ]);
+
+  res.send({
+    message: `Verification link has been sent to ${req.user!.email}`
+  });
 };

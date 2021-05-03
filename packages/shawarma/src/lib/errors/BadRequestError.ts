@@ -1,17 +1,13 @@
 import { CustomError } from "./CustomError";
-
-interface R {
-  message: string;
-  field: string;
-}
+import { IErrorParam } from "@app/water";
 
 export class BadRequestError extends CustomError {
   status = 400;
   public field?: string;
 
-  constructor(public resource: string | R) {
-    super(typeof resource === "string" ? resource : resource.message);
-    this.field = typeof resource === "string" ? undefined : resource.field;
+  constructor(public t: string | IErrorParam) {
+    super(typeof t === "string" ? t : t.message);
+    this.field = typeof t === "string" ? undefined : t.field;
 
     Object.setPrototypeOf(this, BadRequestError.prototype);
   }
