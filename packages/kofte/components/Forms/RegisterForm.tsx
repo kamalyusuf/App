@@ -36,7 +36,7 @@ export const RegisterForm: React.FC = () => {
           try {
             const { data } = await api.post<IUser>("/auth/signup", values);
             queryClient.setQueryData("/auth/me", () => data);
-            router.replace("/profile");
+            router.replace("/account");
           } catch (e) {
             setErrors(transformErrors(e.response.data.errors));
           }

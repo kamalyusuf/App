@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.3.0",
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.1",
+    "date-fns": "^2.21.1",
     "formik": "^2.2.6",
     "framer-motion": "^4.1.11",
     "next": "10.2.0",

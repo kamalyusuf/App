@@ -16,12 +16,12 @@ export const LoginForm: React.FC = () => {
   return (
     <>
       <Formik
-        initialValues={{ email: "kbomoi@yahoo.com", password: "kamalkamal" }}
+        initialValues={{ email: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           try {
             const { data } = await api.post<IUser>("/auth/signin", values);
             queryClient.setQueryData("/auth/me", () => data);
-            router.replace(redirect ? redirect : "/profile");
+            router.replace(redirect ? redirect : "/account");
           } catch (e) {
             setErrors(transformErrors(e.response.data.errors));
           }

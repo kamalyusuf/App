@@ -42,6 +42,15 @@ const AlreadyVerified = (
   </Center>
 );
 
+const YouAreLoggedInWithAnotherAccount = (
+  <Center w="100%" h="100%" bg="gray.50">
+    <Text fontSize="2xl" color="red" fontWeight="bold">
+      You are logged in with another account. Please logout and login with the
+      corresponding account to proceed with verification
+    </Text>
+  </Center>
+);
+
 const Verify: NextPage = () => {
   const token = useSearchParams("token");
   const email = useSearchParams("email");
@@ -50,6 +59,8 @@ const Verify: NextPage = () => {
   const { me } = useMeQuery();
 
   if (!token || !email) return InvalidEmailOrToken;
+
+  if (email !== me?.email) return YouAreLoggedInWithAnotherAccount;
 
   if (me?.email_verified) return AlreadyVerified;
 

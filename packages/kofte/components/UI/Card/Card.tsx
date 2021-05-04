@@ -8,6 +8,7 @@ export const Card = (props: BoxProps) => (
     px={{ base: "4", md: "10" }}
     shadow="base"
     rounded={{ sm: "lg" }}
+    overflow="hidden"
     {...props}
   />
 );

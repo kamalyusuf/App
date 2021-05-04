@@ -41,7 +41,7 @@ export const NavBar: React.FC = () => {
           >
             <Link text="Home" href="/" fontSize="xl" />
             <Stack align="center" direction="row">
-              {me && <Link text="Profile" href="/profile" fontSize="xl" />}
+              {me && <Link text="Account" href="/account" fontSize="xl" />}
             </Stack>
           </Stack>
           <Stack
