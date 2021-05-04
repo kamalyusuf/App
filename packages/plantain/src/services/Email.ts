@@ -15,7 +15,7 @@ export class EmailService {
     const html = await ejs.renderFile(p, { email, link });
     const message = {
       to: email,
-      from: `<${process.env.SENDGRID_EMAIL2}>`,
+      from: `App <${process.env.SENDGRID_EMAIL2}>`,
       subject: "Verify your email",
       html,
       text: htmlToText(html)

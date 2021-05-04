@@ -36,7 +36,7 @@ router.post("/verify", AuthController.verify);
 
 router.post(
   "/verify/re",
-  generateSpeedLimiter({ duration: 900, delayAfter: 2, delayMs: 3000 }),
+  generateSpeedLimiter({ duration: 900, delayAfter: 1, delayMs: 2000 }),
   isAuthenticated,
   AuthController.resendVerificationEmail
 );

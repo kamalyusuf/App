@@ -1,11 +1,11 @@
 import supertest from "supertest";
 import { app } from "../app";
-import { emailQueue } from "../lib/emailQueue";
+import { emailQueue } from "../lib/email-queue";
 import { User } from "../models/User";
 
 const request = supertest.agent(app);
 
-jest.mock("../lib/emailQueue");
+jest.mock("../lib/email-queue");
 
 describe("signup", () => {
   it("should signup successfully", async () => {

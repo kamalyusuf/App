@@ -1,4 +1,3 @@
-import { randomBytes } from "crypto";
 import { RequestHandler } from "express";
 import passport from "passport";
 import { IVerifyOptions } from "passport-local";
@@ -11,9 +10,11 @@ import {
 } from "../lib";
 import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
+import { ICredentials, IEmailTokenInput } from "@app/water";
+import { generateRandomToken } from "../utils";
 
 export const signup: RequestHandler = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password }: ICredentials = req.body;
 
   if (await User.exists({ email })) {
     throw new BadRequestError({
@@ -25,12 +26,14 @@ export const signup: RequestHandler = async (req, res, next) => {
   const user = new User({ email, password });
   await user.save();
 
-  const token = randomBytes(8).toString("hex");
+  const token = generateRandomToken(8);
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
-  await redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24 * 7);
 
-  await emailQueue.queueEmailVerification({ email: user.email, token });
+  await Promise.all([
+    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24 * 7),
+    emailQueue.queueEmailVerification({ email: user.email, token })
+  ]);
 
   req.logIn(user, (error) => {
     if (error) {
@@ -94,7 +97,7 @@ export const me: RequestHandler = async (req, res) => {
 };
 
 export const verify: RequestHandler = async (req, res) => {
-  const { token, email } = req.body;
+  const { token, email }: IEmailTokenInput = req.body;
   if (!token || !email) {
     throw new BadRequestError("Invalid email or token");
   }
@@ -125,7 +128,7 @@ export const verify: RequestHandler = async (req, res) => {
 };
 
 export const forgotPassword: RequestHandler = async (req, res) => {
-  const { email } = req.body;
+  const { email }: Pick<IEmailTokenInput, "email"> = req.body;
 
   const user = await User.findOne({ email }).select("+password_reset_token");
   if (!user) {
@@ -136,7 +139,7 @@ export const forgotPassword: RequestHandler = async (req, res) => {
     await redis.del(`${RPrefix.FORGOT_PASSWORD}${user.password_reset_token}`);
   }
 
-  const token = randomBytes(32).toString("hex");
+  const token = generateRandomToken(32);
   const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
   user.set({ password_reset_token: token });
 
@@ -153,7 +156,7 @@ export const forgotPassword: RequestHandler = async (req, res) => {
 
 export const resetPassword: RequestHandler = async (req, res) => {
   const token = req.params.token;
-  const { password }: { password: string } = req.body;
+  const { password }: Pick<ICredentials, "password"> = req.body;
 
   const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
   const userId = await redis.get(key);
@@ -178,7 +181,7 @@ export const resetPassword: RequestHandler = async (req, res) => {
 };
 
 export const resendVerificationEmail: RequestHandler = async (req, res) => {
-  const token = randomBytes(32).toString("hex");
+  const token = generateRandomToken(8);
 
   const key = `${RPrefix.EMAIL_VERIFICATION}${token}`;
 

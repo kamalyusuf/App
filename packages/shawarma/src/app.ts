@@ -7,11 +7,10 @@ import session from "express-session";
 import passport from "passport";
 import cors from "cors";
 
-import { NotFoundError } from "./lib/errors/NotFoundError";
-import { redis } from "./lib/redis";
 import { IUser } from "./lib/types";
-import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { authRoutes } from "./routes/auth";
+import { NotFoundError, redis } from "./lib";
+import { globalErrorHandler } from "./middlewares";
 
 declare global {
   namespace Express {

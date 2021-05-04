@@ -1,5 +1,5 @@
 export * from "./errors";
-export * from "./emailQueue";
+export * from "./email-queue";
 export * from "./logger";
 export * from "./redis";
 export * from "./start";

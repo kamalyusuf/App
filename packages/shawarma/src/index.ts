@@ -1,4 +1,3 @@
-// npx gen-env-types .env -o src/types/env.d.ts -e .
 if (process.env.NODE_ENV !== "test") {
   require("dotenv-safe").config();
 }
@@ -8,7 +7,7 @@ import { app } from "./app";
 import { mongodb } from "./config/mongodb";
 import { logger } from "./lib/logger";
 import { start } from "./lib/start";
-import { exitHandler } from "./utils/exitHandler";
+import { exitHandler } from "./utils";
 
 let _server: Server;
 
