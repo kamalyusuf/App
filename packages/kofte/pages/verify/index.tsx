@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { Formik, Form, Field, FieldProps } from "formik";
 import { withAuth } from "../../hocs/withAuth";
+import Head from "next/head";
 
 const InvalidEmailOrToken = (
   <Center w="100%" h="100%" bg="gray.50">
@@ -67,53 +68,58 @@ const Verify: NextPage = () => {
   return verified ? (
     EmailVerified
   ) : (
-    <Box bg="gray.50" w="100%" h="100%">
-      <Center>
-        <Formik
-          initialValues={{ token, email }}
-          onSubmit={async (values) => {
-            await mutateAsync(values, {
-              onSuccess: (data) => {
-                setVerified(true);
-              }
-            });
-          }}
-        >
-          {({ values: { token, email } }) => (
-            <Form>
-              <Stack>
-                <Field name="email">
-                  {({ field }: FieldProps) => (
-                    <FormControl>
-                      <FormLabel>Email address</FormLabel>
-                      <Input {...field} type="email" />
-                    </FormControl>
-                  )}
-                </Field>
+    <>
+      <Head>
+        <title>App | Verify Email</title>
+      </Head>
+      <Box bg="gray.50" w="100%" h="100%">
+        <Center>
+          <Formik
+            initialValues={{ token, email }}
+            onSubmit={async (values) => {
+              await mutateAsync(values, {
+                onSuccess: (data) => {
+                  setVerified(true);
+                }
+              });
+            }}
+          >
+            {({ values: { token, email } }) => (
+              <Form>
+                <Stack>
+                  <Field name="email">
+                    {({ field }: FieldProps) => (
+                      <FormControl>
+                        <FormLabel>Email address</FormLabel>
+                        <Input {...field} type="email" />
+                      </FormControl>
+                    )}
+                  </Field>
 
-                <Field name="token">
-                  {({ field }: FieldProps) => (
-                    <FormControl>
-                      <FormLabel>Token</FormLabel>
-                      <Input {...field} type="text" />
-                    </FormControl>
-                  )}
-                </Field>
+                  <Field name="token">
+                    {({ field }: FieldProps) => (
+                      <FormControl>
+                        <FormLabel>Token</FormLabel>
+                        <Input {...field} type="text" />
+                      </FormControl>
+                    )}
+                  </Field>
 
-                <Button
-                  type="submit"
-                  colorScheme="blue"
-                  disabled={isLoading || !token || !email}
-                  isLoading={isLoading}
-                >
-                  Verify
-                </Button>
-              </Stack>
-            </Form>
-          )}
-        </Formik>
-      </Center>
-    </Box>
+                  <Button
+                    type="submit"
+                    colorScheme="blue"
+                    disabled={isLoading || !token || !email}
+                    isLoading={isLoading}
+                  >
+                    Verify
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
+        </Center>
+      </Box>
+    </>
   );
 };
 

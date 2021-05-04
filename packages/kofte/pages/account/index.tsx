@@ -12,6 +12,7 @@ import { withAuth } from "../../hocs/withAuth";
 import { useMeQuery } from "../../hooks";
 import { MdVerifiedUser, MdCancel } from "react-icons/md";
 import { format, parseISO } from "date-fns";
+import Head from "next/head";
 
 const Account: NextPage = () => {
   const { me } = useMeQuery();
@@ -19,26 +20,31 @@ const Account: NextPage = () => {
   if (!me) return null;
 
   return (
-    <NavBarLayout>
-      <Box as="section" py="12" px={{ md: "8" }} h="100%">
-        <Card maxW="3xl" mx="auto">
-          <CardHeader title="Account" />
-          <CardContent>
-            <CardProperty label="Email" value={me.email} />
-            <CardProperty
-              label="Verified"
-              value={
-                <Icon as={me.email_verified ? MdVerifiedUser : MdCancel} />
-              }
-            />
-            <CardProperty
-              label="Member Since"
-              value={format(parseISO(me.created_at), "do MMMM, yyyy")}
-            />
-          </CardContent>
-        </Card>
-      </Box>
-    </NavBarLayout>
+    <>
+      <Head>
+        <title>App | Account</title>
+      </Head>
+      <NavBarLayout>
+        <Box as="section" py="12" px={{ md: "8" }} h="100%">
+          <Card maxW="3xl" mx="auto">
+            <CardHeader title="Account" />
+            <CardContent>
+              <CardProperty label="Email" value={me.email} />
+              <CardProperty
+                label="Verified"
+                value={
+                  <Icon as={me.email_verified ? MdVerifiedUser : MdCancel} />
+                }
+              />
+              <CardProperty
+                label="Member Since"
+                value={format(parseISO(me.created_at), "do MMMM, yyyy")}
+              />
+            </CardContent>
+          </Card>
+        </Box>
+      </NavBarLayout>
+    </>
   );
 };
 
