@@ -26,14 +26,14 @@ export class EmailService {
   }
 
   static async sendForgotPasswordEmail({ email, token }: IEmailTokenInput) {
-    const link = `${process.env.WEB_URL}/reset/${token}`;
+    const link = `${process.env.KOFTE_URL}/reset/${token}`;
     const p = path.join(__dirname, "..", "templates", "forgot-password.ejs");
 
     const html = await ejs.renderFile(p, { email, link });
     const message = {
       to: email,
-      from: `Populate here <${process.env.SENDGRID_EMAIL}>`,
-      subject: "Reset your password",
+      from: `App <${process.env.SENDGRID_EMAIL2}>`,
+      subject: "Ask and you shall receive... a password reset",
       html,
       text: htmlToText(html)
     };

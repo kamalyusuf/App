@@ -6,7 +6,8 @@ import {
   checkPassword,
   guest,
   isAuthenticated,
-  checkValidationResult
+  checkValidationResult,
+  isUnauthenticated
 } from "../middlewares";
 
 const router = Router();
@@ -41,7 +42,7 @@ router.post(
   AuthController.resendVerificationEmail
 );
 
-router.use(generateRateLimiter({ max: 5, duration: 900 }), isAuthenticated);
+router.use(generateRateLimiter({ max: 5, duration: 900 }), isUnauthenticated);
 
 router.post(
   "/forgot",
@@ -51,7 +52,7 @@ router.post(
 );
 
 router.post(
-  "/reset/:token",
+  "/reset",
   [checkPassword],
   checkValidationResult,
   AuthController.resetPassword

@@ -4,3 +4,4 @@ export * from "./guest";
 export * from "./is-authenticated";
 export * from "./limiters";
 export * from "./validation";
+export * from "./is-unauthenticated";

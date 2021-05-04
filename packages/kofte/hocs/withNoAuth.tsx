@@ -15,7 +15,7 @@ export const withNoAuth = <T extends {}>(Component: NextPage<T>) => (
   }
 
   if (!loading && me) {
-    router.replace(`/`);
+    router.replace(`/account`);
     return null;
   }
 

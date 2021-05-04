@@ -19,7 +19,7 @@ export const NavBar: React.FC = () => {
       {
         onSuccess: () => {
           queryClient.resetQueries();
-          router.push("/");
+          router.replace("/");
         }
       }
     );

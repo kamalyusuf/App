@@ -16,7 +16,11 @@ import NextLink from "next/link";
 import { useField, ErrorMessage } from "formik";
 import { InputErrorMessage } from "../InputErrorMessage";
 
-export const PasswordField: React.FC = () => {
+interface Props {
+  showForgotPassword?: boolean;
+}
+
+export const PasswordField: React.FC<Props> = ({ showForgotPassword }) => {
   const { isOpen, onToggle } = useDisclosure();
   const inputRef = useRef<HTMLInputElement>(null);
   const [field] = useField("password");
@@ -37,16 +41,20 @@ export const PasswordField: React.FC = () => {
     <FormControl id="password">
       <Flex justify="space-between">
         <FormLabel>Password</FormLabel>
-        <NextLink href="/login/forgot">
-          <Box
-            as="a"
-            color={mode("blue.600", "blue.200")}
-            fontWeight="semibold"
-            fontSize="sm"
-          >
-            Forgot Password?
-          </Box>
-        </NextLink>
+        {showForgotPassword && (
+          <NextLink href="/login/forgot">
+            <Box
+              as="a"
+              color={mode("blue.600", "blue.200")}
+              fontWeight="semibold"
+              fontSize="sm"
+              style={{ cursor: "pointer" }}
+              _hover={{ textDecoration: "underline" }}
+            >
+              Forgot Password?
+            </Box>
+          </NextLink>
+        )}
       </Flex>
       <InputGroup>
         <InputRightElement>
@@ -69,4 +77,8 @@ export const PasswordField: React.FC = () => {
       <ErrorMessage name="password" component={InputErrorMessage} />
     </FormControl>
   );
+};
+
+PasswordField.defaultProps = {
+  showForgotPassword: true
 };

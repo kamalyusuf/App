@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { useMutation } from "react-query";
 import { useRequest } from "../useRequest";
 
@@ -7,5 +8,5 @@ export const useLogoutMutation = () => {
     method: "post"
   });
 
-  return useMutation(doRequest);
+  return useMutation<null, AxiosError, {}>(doRequest);
 };

@@ -10,7 +10,7 @@ import {
 } from "../lib";
 import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
-import { ICredentials, IEmailTokenInput } from "@app/water";
+import { ICredentials, IEmailTokenInput, IResetPassword } from "@app/water";
 import { generateRandomToken } from "../utils";
 
 export const signup: RequestHandler = async (req, res, next) => {
@@ -131,32 +131,34 @@ export const forgotPassword: RequestHandler = async (req, res) => {
   const { email }: Pick<IEmailTokenInput, "email"> = req.body;
 
   const user = await User.findOne({ email }).select("+password_reset_token");
-  if (!user) {
-    throw new NotFoundError("Account with that email does not exist");
+  // if (!user) {
+  //   return res.send({ message });
+  //   // throw new NotFoundError("Account with that email does not exist");
+
+  if (user) {
+    if (user.password_reset_token) {
+      await redis.del(`${RPrefix.FORGOT_PASSWORD}${user.password_reset_token}`);
+    }
+
+    const token = generateRandomToken(32);
+    const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
+    user.set({ password_reset_token: token });
+
+    await Promise.all([
+      user.save(),
+      redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24),
+      emailQueue.queueForgotPassword({ email: user.email, token })
+    ]);
   }
-
-  if (user.password_reset_token) {
-    await redis.del(`${RPrefix.FORGOT_PASSWORD}${user.password_reset_token}`);
-  }
-
-  const token = generateRandomToken(32);
-  const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
-  user.set({ password_reset_token: token });
-
-  await Promise.all([
-    user.save(),
-    redis.set(key, user.id, "ex", 1000 * 60 * 60 * 24),
-    emailQueue.queueForgotPassword({ email: user.email, token })
-  ]);
 
   res.send({
-    message: `An email has been sent to ${user.email} with further instructions`
+    message:
+      "If we find a match, you'll get an email with a link to reset your password shortly"
   });
 };
 
 export const resetPassword: RequestHandler = async (req, res) => {
-  const token = req.params.token;
-  const { password }: Pick<ICredentials, "password"> = req.body;
+  const { password, token }: IResetPassword = req.body;
 
   const key = `${RPrefix.FORGOT_PASSWORD}${token}`;
   const userId = await redis.get(key);

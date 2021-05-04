@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import React from "react";
 import { InputErrorMessage, PasswordField } from "../UI";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import * as yup from "yup";
 import { api } from "../../lib";
 import { IResponseError, IUser } from "@app/water";
@@ -49,7 +49,7 @@ export const RegisterForm: React.FC = () => {
           <Form>
             <Stack spacing={8}>
               <Field name="email">
-                {({ field, form }: any) => (
+                {({ field }: FieldProps) => (
                   <FormControl>
                     <FormLabel>Email address</FormLabel>
                     <Input {...field} type="email" />

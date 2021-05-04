@@ -1,7 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import React from "react";
 import { InputErrorMessage, PasswordField } from "../UI";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage, FieldProps } from "formik";
 import { api } from "../../lib";
 import { IUser } from "@app/water";
 import { useQueryClient } from "react-query";
@@ -32,7 +32,7 @@ export const LoginForm: React.FC = () => {
           <Form>
             <Stack spacing={8}>
               <Field name="email">
-                {({ field, form }: any) => (
+                {({ field, form }: FieldProps) => (
                   <FormControl>
                     <FormLabel>Email address</FormLabel>
                     <Input {...field} type="email" />
