@@ -8,9 +8,14 @@ import {
   redis,
   NotAuthorizedError
 } from "../lib";
-import { IUser, RPrefix } from "../lib/types";
 import { User } from "../models/User";
-import { ICredentials, IEmailTokenInput, IResetPassword } from "@app/water";
+import {
+  ICredentials,
+  IEmailTokenInput,
+  IResetPassword,
+  RPrefix,
+  IUser
+} from "@app/water";
 import { generateRandomToken } from "../utils";
 
 export const signup: RequestHandler = async (req, res, next) => {

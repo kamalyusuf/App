@@ -7,8 +7,8 @@ import session from "express-session";
 import passport from "passport";
 import cors from "cors";
 
-import { IUser } from "./lib/types";
-import { authRoutes } from "./routes/auth";
+import { IUser } from "@app/water";
+import { authRoutes, teamsRoutes } from "./routes";
 import { NotFoundError, redis } from "./lib";
 import { globalErrorHandler } from "./middlewares";
 
@@ -52,6 +52,7 @@ app.use(passport.session());
 
 app.get("/api/ping", (_, res) => res.send("pong"));
 app.use("/api/auth", authRoutes);
+app.use("/api/teams", teamsRoutes);
 
 app.use(() => {
   throw new NotFoundError("Route not found");

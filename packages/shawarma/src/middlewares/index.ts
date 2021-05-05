@@ -5,3 +5,5 @@ export * from "./is-authenticated";
 export * from "./limiters";
 export * from "./validation";
 export * from "./is-unauthenticated";
+export * from "./is-verified";
+export * from "./is-valid-objectid";

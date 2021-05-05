@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as AuthController from "../controllers/auth";
+import { AuthController } from "../controllers";
 import { generateRateLimiter, generateSpeedLimiter } from "../utils";
 import {
   checkEmail,

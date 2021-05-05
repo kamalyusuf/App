@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomError } from "../lib/errors/CustomError";
+import { IError } from "@app/water";
 import { logger } from "../lib/logger";
-import { IError } from "../lib/types";
 
 export const globalErrorHandler = (
   error: IError,
