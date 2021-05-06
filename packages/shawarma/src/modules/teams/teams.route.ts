@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { TeamsController } from "../controllers";
 import {
-  checkTeamName,
   isAuthenticated,
   isVerified,
+  checkTeamName,
   checkValidationResult,
   isValidObjectId
-} from "../middlewares";
+} from "../../middlewares";
+import * as TeamsController from "./teams.controller";
 
 const router = Router();
 

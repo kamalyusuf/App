@@ -1,22 +1,22 @@
+import {
+  ICredentials,
+  RPrefix,
+  IUser,
+  IEmailTokenInput,
+  IResetPassword
+} from "@app/water";
 import { RequestHandler } from "express";
-import passport from "passport";
-import { IVerifyOptions } from "passport-local";
+import { User } from "../users";
 import {
   BadRequestError,
   emailQueue,
+  NotAuthorizedError,
   NotFoundError,
-  redis,
-  NotAuthorizedError
-} from "../lib";
-import { User } from "../models/User";
-import {
-  ICredentials,
-  IEmailTokenInput,
-  IResetPassword,
-  RPrefix,
-  IUser
-} from "@app/water";
-import { generateRandomToken } from "../utils";
+  redis
+} from "../../lib";
+import { generateRandomToken } from "../../utils";
+import passport from "passport";
+import { IVerifyOptions } from "passport-local";
 
 export const signup: RequestHandler = async (req, res, next) => {
   const { email, password }: ICredentials = req.body;

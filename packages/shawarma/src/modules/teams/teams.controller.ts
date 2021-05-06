@@ -1,9 +1,9 @@
-import { RequestHandler } from "express";
-import { Team } from "../models/Team";
-import { TeamMember } from "../models/TeamMember";
-import { ICreateTeam, MembershipStatuses, TeamRoles } from "@app/water";
 import mongoose, { ClientSession, PaginateOptions } from "mongoose";
-import { BadRequestError, InternalServerError, NotFoundError } from "../lib";
+import { ICreateTeam, MembershipStatuses, TeamRoles } from "@app/water";
+import { RequestHandler } from "express";
+import { Team } from "./team.model";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../lib";
+import { TeamMember } from "../team-members";
 
 export const create: RequestHandler = async (req, res) => {
   const user = req.user!;

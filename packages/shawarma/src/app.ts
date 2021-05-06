@@ -7,10 +7,11 @@ import passport from "passport";
 import cors from "cors";
 
 import { IUser } from "@app/water";
-import { authRoutes, teamsRoutes } from "./routes";
 import { NotFoundError, redis } from "./lib";
 import { globalErrorHandler } from "./middlewares";
 import { Passport } from "./config";
+import { authRoutes } from "./modules/auth";
+import { teamsRoutes } from "./modules/teams";
 
 declare global {
   namespace Express {
