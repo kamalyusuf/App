@@ -8,7 +8,9 @@ export type ITeamDoc = Document & ITeam;
 const TeamSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    lowercase: true,
+    trim: true
   },
   owner: {
     type: Schema.Types.ObjectId,

@@ -1,4 +1,3 @@
-import "./config/passport";
 import "express-async-errors";
 
 import connectRedis from "connect-redis";
@@ -11,6 +10,7 @@ import { IUser } from "@app/water";
 import { authRoutes, teamsRoutes } from "./routes";
 import { NotFoundError, redis } from "./lib";
 import { globalErrorHandler } from "./middlewares";
+import { Passport } from "./config";
 
 declare global {
   namespace Express {
@@ -21,6 +21,8 @@ declare global {
 const app: Application = express();
 
 const RedisStore = connectRedis(session);
+
+Passport.init(passport);
 
 app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.KOFTE_URL, credentials: true }));

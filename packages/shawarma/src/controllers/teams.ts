@@ -3,11 +3,15 @@ import { Team } from "../models/Team";
 import { TeamMember } from "../models/TeamMember";
 import { ICreateTeam, MembershipStatuses, TeamRoles } from "@app/water";
 import mongoose, { ClientSession, PaginateOptions } from "mongoose";
-import { InternalServerError, NotFoundError } from "../lib";
+import { BadRequestError, InternalServerError, NotFoundError } from "../lib";
 
 export const create: RequestHandler = async (req, res) => {
   const user = req.user!;
   const { name }: ICreateTeam = req.body;
+
+  if (await Team.exists({ name: name.toLowerCase(), owner: user.id })) {
+    throw new BadRequestError("Team name must be unique");
+  }
 
   const team = new Team({ name, owner: user.id });
   team.members.push(user.id);
