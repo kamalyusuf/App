@@ -7,5 +7,8 @@ declare namespace NodeJS {
     SESSION_SECRET: string;
     SESSION_NAME: string;
     KOFTE_URL: string;
+    GOOGLE_CLIENT_ID: string;
+    GOOGLE_CLIENT_SECRET: string;
+    GOOGLE_CALLBACK_URL: string;
   }
 }

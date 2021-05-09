@@ -5,9 +5,17 @@ export class NotAuthorizedError extends CustomError {
   status = 401;
   public field?: string;
 
-  constructor(public t?: IErrorParam) {
-    super(t && t.message ? t.message : "Not authorized");
-    this.field = typeof t !== "undefined" ? t.field : undefined;
+  constructor(public t?: string | IErrorParam) {
+    super(
+      typeof t === "string"
+        ? t
+        : typeof t !== "string" && typeof t !== "undefined" && t.message
+        ? t.message
+        : "Not authorized"
+    );
+
+    this.field =
+      typeof t !== "string" && typeof t !== "undefined" ? t.field : undefined;
 
     Object.setPrototypeOf(this, NotAuthorizedError.prototype);
   }

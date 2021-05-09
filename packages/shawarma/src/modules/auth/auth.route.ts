@@ -1,14 +1,14 @@
-import { Router } from "express";
-import * as AuthController from "../controllers/auth";
-import { generateRateLimiter, generateSpeedLimiter } from "../utils";
 import {
   checkEmail,
   checkPassword,
   guest,
-  isAuthenticated,
   checkValidationResult,
+  isAuthenticated,
   isUnauthenticated
-} from "../middlewares";
+} from "./../../middlewares";
+import { Router } from "express";
+import { generateRateLimiter, generateSpeedLimiter } from "../../utils";
+import * as AuthController from "./auth.controller";
 
 const router = Router();
 

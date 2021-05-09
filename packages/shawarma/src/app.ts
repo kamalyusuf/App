@@ -1,4 +1,3 @@
-import "./config/passport";
 import "express-async-errors";
 
 import connectRedis from "connect-redis";
@@ -7,10 +6,13 @@ import session from "express-session";
 import passport from "passport";
 import cors from "cors";
 
-import { IUser } from "./lib/types";
-import { authRoutes } from "./routes/auth";
+import { IUser } from "@app/water";
 import { NotFoundError, redis } from "./lib";
 import { globalErrorHandler } from "./middlewares";
+import { Passport } from "./config";
+import { authRoutes } from "./modules/auth";
+import { teamsRoutes } from "./modules/teams";
+import { accountRoutes } from "./modules/account";
 
 declare global {
   namespace Express {
@@ -21,6 +23,8 @@ declare global {
 const app: Application = express();
 
 const RedisStore = connectRedis(session);
+
+Passport.init(passport);
 
 app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.KOFTE_URL, credentials: true }));
@@ -51,7 +55,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/api/ping", (_, res) => res.send("pong"));
+app.use("/api/account", accountRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/teams", teamsRoutes);
 
 app.use(() => {
   throw new NotFoundError("Route not found");

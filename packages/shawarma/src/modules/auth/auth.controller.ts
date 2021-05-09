@@ -1,17 +1,25 @@
+import {
+  ICredentials,
+  RPrefix,
+  IUser,
+  IEmailTokenInput,
+  IResetPassword
+} from "@app/water";
 import { RequestHandler } from "express";
-import passport from "passport";
-import { IVerifyOptions } from "passport-local";
+import { User } from "../users";
+import { Account } from "../account";
 import {
   BadRequestError,
   emailQueue,
+  NotAuthorizedError,
   NotFoundError,
   redis,
-  NotAuthorizedError
-} from "../lib";
-import { IUser, RPrefix } from "../lib/types";
-import { User } from "../models/User";
-import { ICredentials, IEmailTokenInput, IResetPassword } from "@app/water";
-import { generateRandomToken } from "../utils";
+  InternalServerError
+} from "../../lib";
+import { generateRandomToken } from "../../utils";
+import passport from "passport";
+import { IVerifyOptions } from "passport-local";
+import mongoose, { ClientSession } from "mongoose";
 
 export const signup: RequestHandler = async (req, res, next) => {
   const { email, password }: ICredentials = req.body;
@@ -24,7 +32,19 @@ export const signup: RequestHandler = async (req, res, next) => {
   }
 
   const user = new User({ email, password });
-  await user.save();
+  const account = new Account({ user: user.id });
+
+  await (mongoose as any).connection.transaction(
+    async (session: ClientSession) => {
+      try {
+        await user.save();
+        await account.save();
+      } catch (e) {
+        await session.abortTransaction();
+        throw new InternalServerError();
+      }
+    }
+  );
 
   const token = generateRandomToken(8);
 
@@ -77,6 +97,7 @@ export const signin: RequestHandler = (req, res, next) => {
 };
 
 export const signout: RequestHandler = (req, res, next) => {
+  req.logout();
   req.session.destroy((error) => {
     if (error) {
       return next(error);

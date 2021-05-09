@@ -1,23 +1,51 @@
 import { Box, Icon } from "@chakra-ui/react";
 import { NextPage } from "next";
-import React from "react";
+import React, { useState } from "react";
 import { NavBarLayout } from "../../components/Layouts";
 import {
   Card,
   CardProperty,
   CardHeader,
-  CardContent
+  CardContent,
+  LoadingSpinner
 } from "../../components/UI";
 import { withAuth } from "../../hocs/withAuth";
-import { useMeQuery } from "../../hooks";
+import { useAccountQuery, useUnlinkProviderMutation } from "../../hooks";
 import { MdVerifiedUser, MdCancel } from "react-icons/md";
 import { format, parseISO } from "date-fns";
 import Head from "next/head";
+import { ConnectAccountButton } from "../../components/ConnectAccountButton";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { IUser, IAccount } from "@app/water";
+import { useQueryClient } from "react-query";
+
+const Providers = [
+  {
+    label: "Google",
+    value: "google_id",
+    icon: FcGoogle,
+    link: `${process.env.NEXT_PUBLIC_API_URL}/api/account/link/google`
+  },
+  {
+    label: "Github",
+    value: "github_id",
+    icon: FaGithub,
+    link: `${process.env.NEXT_PUBLIC_API_URL}/api/account/link/github`
+  }
+];
 
 const Account: NextPage = () => {
-  const { me } = useMeQuery();
+  const { account, loading: isLoadingAccount } = useAccountQuery();
+  const { mutateAsync } = useUnlinkProviderMutation();
+  const [unlinking, setUnlinking] = useState<string>("");
+  const queryClient = useQueryClient();
 
-  if (!me) return null;
+  if (isLoadingAccount) {
+    return <LoadingSpinner />;
+  }
+
+  if (!account) return null;
 
   return (
     <>
@@ -29,17 +57,73 @@ const Account: NextPage = () => {
           <Card maxW="3xl" mx="auto">
             <CardHeader title="Account" />
             <CardContent>
-              <CardProperty label="Email" value={me.email} />
+              <CardProperty
+                label="Email"
+                value={(account.user as IUser).email}
+              />
               <CardProperty
                 label="Verified"
                 value={
-                  <Icon as={me.email_verified ? MdVerifiedUser : MdCancel} />
+                  <Icon
+                    as={
+                      (account.user as IUser).email_verified
+                        ? MdVerifiedUser
+                        : MdCancel
+                    }
+                  />
                 }
               />
               <CardProperty
                 label="Member Since"
-                value={format(parseISO(me.created_at), "do MMMM, yyyy")}
+                value={format(
+                  parseISO((account.user as IUser).created_at),
+                  "do MMMM, yyyy"
+                )}
               />
+            </CardContent>
+            <br />
+            <CardHeader title="Connected accounts" />
+            <CardContent>
+              {Providers.map((provider) => (
+                <CardProperty
+                  key={provider.label}
+                  label={provider.label}
+                  value={
+                    (account as any)[provider.value] ? (
+                      <Icon as={MdVerifiedUser} />
+                    ) : (
+                      <ConnectAccountButton
+                        onClick={() => {
+                          window.open(provider.link, "_self");
+                        }}
+                      />
+                    )
+                  }
+                  icon={provider.icon}
+                  isLoading={unlinking === provider.label}
+                  revokeConnection={
+                    (account as any)[provider.value]
+                      ? async () => {
+                          setUnlinking(provider.label);
+                          await mutateAsync(
+                            { provider: provider.label.toLowerCase() },
+                            {
+                              onSuccess: (data) => {
+                                queryClient.setQueryData<IAccount>(
+                                  "/account",
+                                  (account) => {
+                                    return data;
+                                  }
+                                );
+                              }
+                            }
+                          );
+                          setUnlinking("");
+                        }
+                      : undefined
+                  }
+                />
+              ))}
             </CardContent>
           </Card>
         </Box>

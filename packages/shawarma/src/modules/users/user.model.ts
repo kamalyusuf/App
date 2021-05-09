@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import mongoose, { Document, Schema } from "mongoose";
-import { IUser } from "../lib/types";
+import { IUser, Models } from "@app/water";
 
 type IUserDoc = Document &
   IUser & {
@@ -57,4 +57,4 @@ UserSchema.methods.comparePassword = async function (
   return await argon2.verify(this.get("password"), password);
 };
 
-export const User = mongoose.model<IUserDoc>("User", UserSchema, "users");
+export const User = mongoose.model<IUserDoc>(Models.USER, UserSchema, "users");

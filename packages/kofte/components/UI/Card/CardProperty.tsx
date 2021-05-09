@@ -1,13 +1,31 @@
 import React from "react";
-import { Box, Flex, FlexProps, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  useColorModeValue,
+  Icon,
+  IconButton
+} from "@chakra-ui/react";
+import { IconType } from "react-icons";
+import { MdClose } from "react-icons/md";
 
-interface Props extends FlexProps {
+interface Props {
   label: string;
   value: any;
+  icon?: IconType;
+  isLoading?: boolean;
+  revokeConnection?: () => void;
 }
 
 export const CardProperty = (props: Props) => {
-  const { label, value, ...flexProps } = props;
+  const {
+    label,
+    value,
+    icon,
+    revokeConnection,
+    isLoading,
+    ...flexProps
+  } = props;
   return (
     <Flex
       as="dl"
@@ -16,13 +34,32 @@ export const CardProperty = (props: Props) => {
       py="4"
       _even={{ bg: useColorModeValue("gray.50", "gray.600") }}
       {...flexProps}
+      align="center"
     >
-      <Box as="dt" minWidth="180px">
-        {label}
-      </Box>
+      <Flex sx={{ gap: "1em" }} minWidth="180px">
+        {icon && <Icon boxSize={6} as={icon} />}
+        <Box as="dt">{label}</Box>
+      </Flex>
+
       <Box as="dd" flex="1" fontWeight="semibold">
         {value}
       </Box>
+
+      {revokeConnection && (
+        <Box>
+          <IconButton
+            aria-label="Revoke connection"
+            icon={<MdClose />}
+            isLoading={isLoading}
+            variant="ghost"
+            colorScheme="red"
+            fontSize="28px"
+            onClick={(e) => {
+              revokeConnection?.();
+            }}
+          />
+        </Box>
+      )}
     </Flex>
   );
 };

@@ -1,7 +1,7 @@
 import supertest from "supertest";
 import { app } from "../app";
-import { emailQueue } from "../lib/email-queue";
-import { User } from "../models/User";
+import { emailQueue } from "../lib";
+import { User } from "../modules/users";
 
 const request = supertest.agent(app);
 

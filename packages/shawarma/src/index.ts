@@ -4,9 +4,8 @@ if (process.env.NODE_ENV !== "test") {
 import { checkEnv } from "@app/water";
 import { Server } from "http";
 import { app } from "./app";
-import { mongodb } from "./config/mongodb";
-import { logger } from "./lib/logger";
-import { start } from "./lib/start";
+import { mongodb } from "./config";
+import { logger, start } from "./lib";
 import { exitHandler } from "./utils";
 
 let _server: Server;
@@ -19,7 +18,10 @@ async function main() {
     "REDIS_URL",
     "SESSION_SECRET",
     "SESSION_NAME",
-    "KOFTE_URL"
+    "KOFTE_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_CALLBACK_URL"
   ]);
 
   await mongodb.connect();
