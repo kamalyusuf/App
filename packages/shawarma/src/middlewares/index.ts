@@ -7,3 +7,4 @@ export * from "./validation";
 export * from "./is-unauthenticated";
 export * from "./is-verified";
 export * from "./is-valid-objectid";
+export * from "./reject";

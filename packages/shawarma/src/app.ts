@@ -13,6 +13,7 @@ import { Passport } from "./config";
 import { authRoutes } from "./modules/auth";
 import { teamsRoutes } from "./modules/teams";
 import { accountRoutes } from "./modules/account";
+import { providersRoutes } from "./modules/providers";
 
 declare global {
   namespace Express {
@@ -58,6 +59,7 @@ app.get("/api/ping", (_, res) => res.send("pong"));
 app.use("/api/account", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/teams", teamsRoutes);
+app.use("/api/providers", providersRoutes);
 
 app.use(() => {
   throw new NotFoundError("Route not found");

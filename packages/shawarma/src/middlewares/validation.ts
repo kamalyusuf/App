@@ -19,5 +19,31 @@ export const checkTeamName = body("name")
   .withMessage("Team name is required")
   .trim()
   .escape()
+  .isString()
   .isLength({ min: 5 })
   .withMessage("Team name must be at least 5 characters");
+
+interface Options {
+  escape?: boolean;
+}
+
+export const generateBaseStringValidation = (
+  field: string,
+  { escape }: Options = { escape: true }
+) => {
+  let base = body(field)
+    .exists()
+    .withMessage(`${field} is required`)
+    .isString()
+    .withMessage("Invalid data type")
+    .not()
+    .isEmpty()
+    .withMessage(`${field} is required`)
+    .trim();
+
+  if (escape) {
+    base = base.escape();
+  }
+
+  return base;
+};

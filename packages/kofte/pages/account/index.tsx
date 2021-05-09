@@ -10,7 +10,11 @@ import {
   LoadingSpinner
 } from "../../components/UI";
 import { withAuth } from "../../hocs/withAuth";
-import { useAccountQuery, useUnlinkProviderMutation } from "../../hooks";
+import {
+  useAccountQuery,
+  useUnlinkProviderMutation,
+  useProvidersQuery
+} from "../../hooks";
 import { MdVerifiedUser, MdCancel } from "react-icons/md";
 import { format, parseISO } from "date-fns";
 import Head from "next/head";
@@ -19,33 +23,26 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IUser, IAccount } from "@app/water";
 import { useQueryClient } from "react-query";
+import { IconType } from "react-icons";
+import { capitalize } from "lodash";
 
-const Providers = [
-  {
-    label: "Google",
-    value: "google_id",
-    icon: FcGoogle,
-    link: `${process.env.NEXT_PUBLIC_API_URL}/api/account/link/google`
-  },
-  {
-    label: "Github",
-    value: "github_id",
-    icon: FaGithub,
-    link: `${process.env.NEXT_PUBLIC_API_URL}/api/account/link/github`
-  }
-];
+const Icons: Record<string, IconType> = {
+  google: FcGoogle,
+  github: FaGithub
+};
 
 const Account: NextPage = () => {
   const { account, loading: isLoadingAccount } = useAccountQuery();
+  const { providers, loading: isLoadingProviders } = useProvidersQuery();
   const { mutateAsync } = useUnlinkProviderMutation();
   const [unlinking, setUnlinking] = useState<string>("");
   const queryClient = useQueryClient();
 
-  if (isLoadingAccount) {
+  if (isLoadingAccount || isLoadingProviders) {
     return <LoadingSpinner />;
   }
 
-  if (!account) return null;
+  if (!account || !providers) return null;
 
   return (
     <>
@@ -84,29 +81,30 @@ const Account: NextPage = () => {
             <br />
             <CardHeader title="Connected accounts" />
             <CardContent>
-              {Providers.map((provider) => (
+              {providers.map((provider) => (
                 <CardProperty
-                  key={provider.label}
-                  label={provider.label}
+                  key={provider.id}
+                  label={capitalize(provider.label)}
                   value={
                     (account as any)[provider.value] ? (
                       <Icon as={MdVerifiedUser} />
                     ) : (
                       <ConnectAccountButton
                         onClick={() => {
-                          window.open(provider.link, "_self");
+                          const link = `${process.env.NEXT_PUBLIC_API_URL}${provider.link}`;
+                          window.open(link, "_self");
                         }}
                       />
                     )
                   }
-                  icon={provider.icon}
+                  icon={Icons[provider.label]}
                   isLoading={unlinking === provider.label}
                   revokeConnection={
                     (account as any)[provider.value]
                       ? async () => {
                           setUnlinking(provider.label);
                           await mutateAsync(
-                            { provider: provider.label.toLowerCase() },
+                            { provider: provider.label },
                             {
                               onSuccess: (data) => {
                                 queryClient.setQueryData<IAccount>(
