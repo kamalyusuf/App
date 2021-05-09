@@ -1,10 +1,13 @@
 import { PassportStatic } from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../modules/users";
+import { Account } from "../modules/account";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { IOAuth, IUser } from "@app/water";
 
 declare module "passport-local" {
   interface IVerifyOptions {
-    status: 401 | 404;
+    status: 401 | 404 | 400;
     field: string;
   }
 }
@@ -51,6 +54,43 @@ export class Passport {
           } catch (e) {
             return done(e);
           }
+        }
+      )
+    );
+
+    passport.use(
+      "google",
+      new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID as string,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+          callbackURL: "/api/account/link/google/callback",
+          passReqToCallback: true
+        },
+        async (req, access_token, refresh_token, profile, done) => {
+          const existing = await Account.findOne({ google_id: profile.id });
+          if (existing && existing.id !== profile.id) {
+            return done(null, undefined, {
+              message:
+                "This Google account is already linked to an App account",
+              status: 401
+            });
+          }
+
+          const account = await Account.findOne({
+            user: req.user?.id
+          }).populate("user");
+          if (!account) {
+            return done(null, undefined, {
+              message: "Account or user does not exist"
+            });
+          }
+
+          account.google_id = profile.id;
+          account.tokens.push({ kind: IOAuth.GOOGLE, access_token });
+          await account.save();
+
+          done(null, account.user as IUser);
         }
       )
     );

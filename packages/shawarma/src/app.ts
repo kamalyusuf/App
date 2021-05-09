@@ -12,6 +12,7 @@ import { globalErrorHandler } from "./middlewares";
 import { Passport } from "./config";
 import { authRoutes } from "./modules/auth";
 import { teamsRoutes } from "./modules/teams";
+import { accountRoutes } from "./modules/account";
 
 declare global {
   namespace Express {
@@ -54,6 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/api/ping", (_, res) => res.send("pong"));
+app.use("/api/account", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/teams", teamsRoutes);
 

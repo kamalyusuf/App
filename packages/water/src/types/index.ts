@@ -6,3 +6,4 @@ export * from "./error";
 export * from "./redis";
 export * from "./team";
 export * from "./model";
+export * from "./account";

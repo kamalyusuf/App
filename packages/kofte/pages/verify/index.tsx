@@ -72,7 +72,7 @@ const Verify: NextPage = () => {
       <Head>
         <title>App | Verify Email</title>
       </Head>
-      <Box bg="gray.50" w="100%" h="100%">
+      <Box bg="gray.50" w="100%" h="100%" mt="10%">
         <Center>
           <Formik
             initialValues={{ token, email }}

@@ -18,7 +18,10 @@ async function main() {
     "REDIS_URL",
     "SESSION_SECRET",
     "SESSION_NAME",
-    "KOFTE_URL"
+    "KOFTE_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_CALLBACK_URL"
   ]);
 
   await mongodb.connect();
