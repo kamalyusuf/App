@@ -39,16 +39,11 @@ export const NavBar: React.FC = () => {
             direction={{ base: "column", md: "row" }}
             spacing={{ base: "3", md: "32" }}
           >
-            <Link text="Home" href="/" fontSize="xl" />
-            <Stack align="center" direction="row">
-              {me && <Link text="Account" href="/account" fontSize="xl" />}
-            </Stack>
+            <Box>
+              <Link text="App" href="/" fontSize="xl" />
+            </Box>
           </Stack>
-          <Stack
-            align="center"
-            direction={{ base: "column", md: "row" }}
-            // spacing={8}
-          >
+          <Stack align="center" direction={{ base: "column", md: "row" }}>
             {!me ? (
               <>
                 <Link text="Login" href="/login" fontSize="xl" />
@@ -58,15 +53,25 @@ export const NavBar: React.FC = () => {
               </>
             ) : (
               me && (
-                <NextLink href="#">
-                  <Button
-                    colorScheme="blue"
-                    onClick={logout}
-                    isLoading={isLoading}
-                  >
-                    Logout
-                  </Button>
-                </NextLink>
+                <Stack
+                  align="center"
+                  direction={{ base: "column", md: "row" }}
+                  spacing={{ base: "3", md: "32" }}
+                >
+                  <Box>
+                    <Link text="Account" href="/account" fontSize="xl" />
+                  </Box>
+
+                  <Box>
+                    <Button
+                      colorScheme="blue"
+                      onClick={logout}
+                      isLoading={isLoading}
+                    >
+                      Logout
+                    </Button>
+                  </Box>
+                </Stack>
               )
             )}
           </Stack>
