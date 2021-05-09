@@ -12,7 +12,7 @@ const AccountSchema = new Schema({
   },
   google_id: {
     type: String,
-    index: true
+    unique: true
   },
   tokens: {
     type: [

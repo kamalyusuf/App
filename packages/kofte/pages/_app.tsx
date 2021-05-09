@@ -8,6 +8,15 @@ import { ReactQueryDevtools } from "react-query/devtools";
 import { wrapper } from "../redux";
 import React from "react";
 import { ErrorToast } from "../components/ErrorToast";
+import Router from "next/router";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+
+Router.events.on("routeChangeStart", () => {
+  NProgress.start();
+});
+Router.events.on("routeChangeComplete", () => NProgress.done());
+Router.events.on("routeChangeError", () => NProgress.done());
 
 Axios.defaults.withCredentials = true;
 
@@ -17,7 +26,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <ChakraProvider>
         <Component {...pageProps} />
         <ErrorToast />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {process.env.NODE_ENV === "development" && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
       </ChakraProvider>
     </QueryClientProvider>
   );

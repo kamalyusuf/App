@@ -20,3 +20,26 @@ body {
   height: 100%;
   background-color: #f7fafc;
 }
+
+#nprogress {
+  position: relative;
+  z-index: 9999999;
+}
+
+#nprogress .bar {
+  background: #3182ce !important;
+  height: 3px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #3182ce, 0 0 5px #3182ce !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #3182ce !important;
+  border-left-color: #3182ce !important;
+}
+
+button:focus {
+  outline: none;
+}
