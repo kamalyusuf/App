@@ -9,6 +9,7 @@ declare namespace NodeJS {
     KOFTE_URL: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
-    GOOGLE_CALLBACK_URL: string;
+    GITHUB_CLIENT_ID: string;
+    GITHUB_CLIENT_SECRET: string;
   }
 }

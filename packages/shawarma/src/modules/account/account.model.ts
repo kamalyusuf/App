@@ -14,6 +14,10 @@ const AccountSchema = new Schema({
     type: String,
     unique: true
   },
+  github_id: {
+    type: String,
+    unique: true
+  },
   tokens: {
     type: [
       {

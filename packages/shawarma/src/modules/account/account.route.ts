@@ -38,6 +38,26 @@ router.get("/link/google/callback", (req, res, next) => {
   )(req, res, next);
 });
 
+router.get("/link/github", passport.authenticate("github"));
+
+router.get("/link/github/callback", (req, res, next) => {
+  passport.authenticate(
+    "github",
+    { session: false },
+    (error: Error, user: IUser, info: IVerifyOptions) => {
+      if (error) {
+        return next(error);
+      }
+
+      if (!user) {
+        return next(createError(info.status, info.message));
+      }
+
+      res.redirect(`${process.env.KOFTE_URL}/account`);
+    }
+  )(req, res, next);
+});
+
 router.patch("/unlink", AccountController.unlinkProvider);
 
 router.get("/", AccountController.retrieve);

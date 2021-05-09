@@ -21,7 +21,8 @@ async function main() {
     "KOFTE_URL",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
-    "GOOGLE_CALLBACK_URL"
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET"
   ]);
 
   await mongodb.connect();

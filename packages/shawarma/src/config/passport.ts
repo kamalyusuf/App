@@ -2,8 +2,13 @@ import { PassportStatic } from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../modules/users";
 import { Account } from "../modules/account";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import {
+  Strategy as GoogleStrategy,
+  VerifyCallback
+} from "passport-google-oauth20";
 import { IOAuth, IUser } from "@app/water";
+import { Strategy as GithubStrategy } from "passport-github2";
+import { Request } from "express";
 
 declare module "passport-local" {
   interface IVerifyOptions {
@@ -82,12 +87,57 @@ export class Passport {
           }).populate("user");
           if (!account) {
             return done(null, undefined, {
-              message: "Account or user does not exist"
+              message: "Account or user does not exist",
+              status: 404
             });
           }
 
           account.google_id = profile.id;
           account.tokens.push({ kind: IOAuth.GOOGLE, access_token });
+          await account.save();
+
+          done(null, account.user as IUser);
+        }
+      )
+    );
+
+    passport.use(
+      "github",
+      new GithubStrategy(
+        {
+          clientID: process.env.GITHUB_CLIENT_ID,
+          clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          callbackURL: "/api/account/link/github/callback",
+          passReqToCallback: true
+        },
+        async (
+          req: Request,
+          access_token: string,
+          refresh_token: string,
+          profile: any,
+          done: VerifyCallback
+        ) => {
+          const existing = await Account.findOne({ github_id: profile.id });
+          if (existing && existing.id !== profile.id) {
+            return done(null, undefined, {
+              message:
+                "This Github account is already linked to an App account",
+              status: 401
+            });
+          }
+
+          const account = await Account.findOne({
+            user: req.user?.id
+          }).populate("user");
+          if (!account) {
+            return done(null, undefined, {
+              message: "Account or user does not exist",
+              status: 404
+            });
+          }
+
+          account.github_id = profile.id;
+          account.tokens.push({ kind: IOAuth.GITHUB, access_token });
           await account.save();
 
           done(null, account.user as IUser);
