@@ -4,15 +4,16 @@ import React from "react";
 interface Props {
   title: string;
   action?: React.ReactNode;
+  p?: boolean;
 }
 
 export const CardHeader = (props: Props) => {
-  const { title, action } = props;
+  const { title, action, p } = props;
   return (
     <Flex
       align="center"
       justify="space-between"
-      px="6"
+      px={p ? "6" : undefined}
       py="4"
       borderBottomWidth="1px"
     >
@@ -22,4 +23,8 @@ export const CardHeader = (props: Props) => {
       {action}
     </Flex>
   );
+};
+
+CardHeader.defaultProps = {
+  p: true
 };

@@ -4,3 +4,4 @@ export * from "./useResendVerificationEmailMutation";
 export * from "./useForgotPasswordMutation";
 export * from "./useResetPasswordMutation";
 export * from "./useUnlinkProviderMutation";
+export * from "./useCreateTeamMutation";

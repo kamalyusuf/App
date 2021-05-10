@@ -53,14 +53,20 @@ export const NavBar: React.FC = () => {
               </>
             ) : (
               me && (
-                <Stack
-                  align="center"
-                  direction={{ base: "column", md: "row" }}
-                  spacing={{ base: "3", md: "32" }}
-                >
-                  <Box>
-                    <Link text="Account" href="/account" fontSize="xl" />
-                  </Box>
+                <Stack align="center" direction="row" spacing="16">
+                  <Stack
+                    align="center"
+                    direction={{ base: "column", md: "row" }}
+                    spacing={{ base: "3", md: "8" }}
+                  >
+                    <Box>
+                      <Link text="Account" href="/account" fontSize="xl" />
+                    </Box>
+
+                    <Box>
+                      <Link text="Teams" href="/teams" fontSize="xl" />
+                    </Box>
+                  </Stack>
 
                   <Box>
                     <Button
