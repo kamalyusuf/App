@@ -7,15 +7,17 @@ import { Container } from "../../../components/Container";
 import { NavBarLayout } from "../../../components/Layouts";
 import { LoadingSpinner, CardHeader } from "../../../components/UI";
 import { useTeamQuery, useTeamMembersQuery } from "../../../hooks";
-import { Box, Text, Stack, Button } from "@chakra-ui/react";
+import { Box, Text, Stack, Button, useDisclosure } from "@chakra-ui/react";
 import { capitalize } from "lodash";
 import { TeamMembers } from "../../../components/TeamMembers";
+import { InviteUserToTeamModal } from "../../../components/Modals";
 
 const TeamPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const { team, loading } = useTeamQuery(id);
   const { members, loading: isLoadingMembers } = useTeamMembersQuery(id);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (loading) return <LoadingSpinner />;
 
@@ -26,6 +28,7 @@ const TeamPage: NextPage = () => {
       <Head>
         <title>App | Team</title>
       </Head>
+      {isOpen && <InviteUserToTeamModal isOpen={isOpen} onClose={onClose} />}
       <NavBarLayout>
         <WaitForEmailVerified>
           <Container>
@@ -35,7 +38,12 @@ const TeamPage: NextPage = () => {
                 p={false}
                 action={
                   <Box>
-                    <Button colorScheme="blue" size="sm" variant="outline">
+                    <Button
+                      colorScheme="blue"
+                      size="sm"
+                      variant="outline"
+                      onClick={onOpen}
+                    >
                       Invite
                     </Button>
                   </Box>

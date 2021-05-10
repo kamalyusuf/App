@@ -9,7 +9,7 @@ export const WaitForEmailVerified: React.FC = ({ children }) => {
     return (
       <Center>
         <Text color="blue.300" fontWeight="bold" fontSize="2xl" mt={12}>
-          You need to verify your email to access teams
+          You need to verify your email to access this feature
         </Text>
       </Center>
     );

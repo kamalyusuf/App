@@ -11,7 +11,7 @@ export const TeamMembers: React.FC<Props> = ({ members }) => {
   return (
     <List>
       {members.map((member) => (
-        <TeamMember member={member} />
+        <TeamMember key={member.id} member={member} />
       ))}
     </List>
   );
