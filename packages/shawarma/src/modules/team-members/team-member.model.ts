@@ -22,12 +22,14 @@ const TeamMemberSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: Models.USER,
-    required: true
+    required: true,
+    index: true
   },
   team: {
     type: Schema.Types.ObjectId,
     ref: Models.TEAM,
-    required: true
+    required: true,
+    select: false
   }
 });
 

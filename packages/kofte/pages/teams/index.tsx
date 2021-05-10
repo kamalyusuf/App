@@ -1,50 +1,23 @@
 import { NextPage } from "next";
 import React from "react";
-import { Container } from "../../components/Container";
+import Head from "next/head";
 import { NavBarLayout } from "../../components/Layouts";
-import { CardHeader, LoadingSpinner } from "../../components/UI";
-import { useTeamsQuery } from "../../hooks";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { Team } from "../../components/Team";
-import { AddIcon } from "@chakra-ui/icons";
-import { CreateTeamModal } from "../../components/Modals";
+import { WaitForEmailVerified } from "../../components/Auth/WaitForEmailVerified";
+import { Teams } from "../../components/Teams";
 
-const Teams: NextPage = () => {
-  const { data, loading } = useTeamsQuery();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+const TeamsPage: NextPage = () => {
   return (
     <>
-      {isOpen && <CreateTeamModal isOpen={isOpen} onClose={onClose} />}
+      <Head>
+        <title>App | Teams</title>
+      </Head>
       <NavBarLayout>
-        <Container>
-          <CardHeader
-            title="Teams"
-            p={false}
-            action={
-              <IconButton
-                aria-label="Create team"
-                icon={<AddIcon />}
-                onClick={onOpen}
-                _active={{
-                  outline: "none"
-                }}
-                _focus={{
-                  outline: "none"
-                }}
-              />
-            }
-          />
-          <br />
-          {loading ? (
-            <LoadingSpinner />
-          ) : (
-            data?.docs.map((team) => <Team key={team.id} team={team} />)
-          )}
-        </Container>
+        <WaitForEmailVerified>
+          <Teams />
+        </WaitForEmailVerified>
       </NavBarLayout>
     </>
   );
 };
 
-export default Teams;
+export default TeamsPage;

@@ -14,17 +14,22 @@ import {
 } from "@chakra-ui/react";
 import { Formik, Form, Field, FieldProps } from "formik";
 import { useCreateTeamMutation } from "../../hooks";
-import { useQueryClient } from "react-query";
+import { QueryObserverResult } from "react-query";
+import { IPaginatedResponse, ITeam } from "@app/water";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  refetch: () => Promise<QueryObserverResult<IPaginatedResponse<ITeam>>>;
 }
 
-export const CreateTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
+export const CreateTeamModal: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  refetch
+}) => {
   const initialFocusRef = useRef(null);
   const { mutateAsync } = useCreateTeamMutation();
-  const queryClient = useQueryClient();
 
   return (
     <Portal>
@@ -43,7 +48,7 @@ export const CreateTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
               onSubmit={async (values) => {
                 await mutateAsync(values, {
                   onSuccess: () => {
-                    queryClient.invalidateQueries("/teams");
+                    refetch();
                     onClose();
                   }
                 });

@@ -7,6 +7,7 @@ import {
   isValidObjectId
 } from "../../middlewares";
 import * as TeamsController from "./teams.controller";
+import { teamMembersRoutes } from "../team-members";
 
 const router = Router();
 
@@ -18,6 +19,8 @@ router.post(
   checkValidationResult,
   TeamsController.create
 );
+
+router.use("/:id/team-members", isValidObjectId, teamMembersRoutes);
 
 router.get("/:id", isValidObjectId, TeamsController.listOne);
 

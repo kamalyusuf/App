@@ -40,6 +40,7 @@ export const signup: RequestHandler = async (req, res, next) => {
         await user.save();
         await account.save();
       } catch (e) {
+        console.log(e);
         await session.abortTransaction();
         throw new InternalServerError();
       }

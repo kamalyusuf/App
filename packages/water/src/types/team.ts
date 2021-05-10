@@ -12,8 +12,8 @@ export interface ITeamMember {
   id: string;
   status: MembershipStatuses;
   role: TeamRoles;
-  user: string | IUser;
-  team: string | IUser;
+  user: IUser;
+  team: ITeam;
   created_at: string;
   updated_at: string;
 }

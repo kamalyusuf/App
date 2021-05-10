@@ -14,6 +14,7 @@ import { authRoutes } from "./modules/auth";
 import { teamsRoutes } from "./modules/teams";
 import { accountRoutes } from "./modules/account";
 import { providersRoutes } from "./modules/providers";
+import { teamMembersRoutes } from "./modules/team-members";
 
 declare global {
   namespace Express {
@@ -60,6 +61,7 @@ app.use("/api/account", accountRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/teams", teamsRoutes);
 app.use("/api/providers", providersRoutes);
+app.use("/api/team-members", teamMembersRoutes);
 
 app.use(() => {
   throw new NotFoundError("Route not found");
