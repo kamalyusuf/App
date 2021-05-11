@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { MembershipStatuses, TeamRoles, ITeamMember, Models } from "@app/water";
+import {
+  MembershipStatuses,
+  TeamRoles,
+  ITeamMember,
+  Models,
+  TeamPermissions
+} from "@app/water";
 
 export type ITeamMemberDoc = Document & ITeamMember;
 

@@ -14,6 +14,7 @@ export interface ITeamMember {
   role: TeamRoles;
   user: IUser;
   team: ITeam;
+  permissions: TeamPermissions[];
   created_at: string;
   updated_at: string;
 }

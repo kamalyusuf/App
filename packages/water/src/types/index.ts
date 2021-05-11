@@ -8,3 +8,4 @@ export * from "./team";
 export * from "./model";
 export * from "./account";
 export * from "./provider";
+export * from "./invite";

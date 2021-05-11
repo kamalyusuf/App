@@ -12,7 +12,10 @@ import {
   FormLabel,
   Input,
   Button,
-  ModalFooter
+  ModalFooter,
+  Stack,
+  Flex,
+  Text
 } from "@chakra-ui/react";
 
 interface Props {
@@ -35,15 +38,19 @@ export const InviteUserToTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
           <ModalHeader>Invite Member</ModalHeader>
           <ModalCloseButton />
           <Formik
-            initialValues={{ email: "" }}
+            initialValues={{ email: "", permissions: [] }}
             onSubmit={(values) => {
               console.log("submitted", values);
+              return Promise.resolve();
             }}
           >
             {({ isSubmitting, values: { email } }) => (
               <>
                 <ModalBody>
-                  <Form id="invite-user-to-team-form">
+                  <Form
+                    id="invite-user-to-team-form"
+                    style={{ display: "grid", gap: "1em" }}
+                  >
                     <Field name="email">
                       {({ field }: FieldProps) => (
                         <FormControl>
@@ -56,6 +63,20 @@ export const InviteUserToTeamModal: React.FC<Props> = ({ isOpen, onClose }) => {
                         </FormControl>
                       )}
                     </Field>
+
+                    <FormControl>
+                      <FormLabel>Permissions</FormLabel>
+                      <Stack spacing={2}>
+                        <Flex justify="space-between" align="center">
+                          <Text>Can Invite</Text>
+                          <Field
+                            type="checkbox"
+                            name="permissions"
+                            value="can:invite"
+                          />
+                        </Flex>
+                      </Stack>
+                    </FormControl>
                   </Form>
                 </ModalBody>
 
