@@ -21,5 +21,14 @@ export const create: RequestHandler = async (req, res) => {
     invite_to_email: invite.invite_to_email
   });
 
-  res.send(invite);
+  res.status(201).send(invite);
+};
+
+export const list: RequestHandler = async (req, res) => {
+  const invites = await Invite.find({ invite_to_email: req.user!.email })
+    .populate("invited_by")
+    .populate("team")
+    .sort({ created_at: -1 });
+
+  res.send(invites);
 };

@@ -5,3 +5,4 @@ export * from "./useForgotPasswordMutation";
 export * from "./useResetPasswordMutation";
 export * from "./useUnlinkProviderMutation";
 export * from "./useCreateTeamMutation";
+export * from "./useTeamInvitationMutation";

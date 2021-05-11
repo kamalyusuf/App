@@ -66,6 +66,10 @@ export const NavBar: React.FC = () => {
                     <Box>
                       <Link text="Teams" href="/teams" fontSize="xl" />
                     </Box>
+
+                    <Box>
+                      <Link text="Invites" href="/invites" fontSize="xl" />
+                    </Box>
                   </Stack>
 
                   <Box>

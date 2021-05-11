@@ -11,6 +11,7 @@ import { Box, Text, Stack, Button, useDisclosure } from "@chakra-ui/react";
 import { capitalize } from "lodash";
 import { TeamMembers } from "../../../components/TeamMembers";
 import { InviteUserToTeamModal } from "../../../components/Modals";
+import { withAuth } from "../../../hocs/withAuth";
 
 const TeamPage: NextPage = () => {
   const router = useRouter();
@@ -28,7 +29,9 @@ const TeamPage: NextPage = () => {
       <Head>
         <title>App | Team</title>
       </Head>
-      {isOpen && <InviteUserToTeamModal isOpen={isOpen} onClose={onClose} />}
+      {isOpen && (
+        <InviteUserToTeamModal isOpen={isOpen} onClose={onClose} team={team} />
+      )}
       <NavBarLayout>
         <WaitForEmailVerified>
           <Container>
@@ -69,4 +72,4 @@ const TeamPage: NextPage = () => {
   );
 };
 
-export default TeamPage;
+export default withAuth(TeamPage);

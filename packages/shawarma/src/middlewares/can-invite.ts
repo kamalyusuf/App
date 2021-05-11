@@ -30,7 +30,7 @@ export const canInvite: RequestHandler = async (req, _, next) => {
     user: req.user!.id
   } as any).lean();
   if (!member) {
-    throw new Error("Team member does not exist");
+    throw new NotAuthorizedError();
   }
 
   const hasPermission = SUPPORTED_PERMISSIONS.some((permission) =>

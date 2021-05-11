@@ -6,6 +6,7 @@ export interface IInvite {
   invited_by: IUser;
   invite_to_email: string;
   team: ITeam;
+  status: IInvitationStatuses;
   permissions: TeamPermissions[];
   created_at: string;
   updated_at: string;

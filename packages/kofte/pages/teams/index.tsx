@@ -4,6 +4,7 @@ import Head from "next/head";
 import { NavBarLayout } from "../../components/Layouts";
 import { WaitForEmailVerified } from "../../components/Auth/WaitForEmailVerified";
 import { Teams } from "../../components/Teams";
+import { withAuth } from "../../hocs/withAuth";
 
 const TeamsPage: NextPage = () => {
   return (
@@ -20,4 +21,4 @@ const TeamsPage: NextPage = () => {
   );
 };
 
-export default TeamsPage;
+export default withAuth(TeamsPage);
