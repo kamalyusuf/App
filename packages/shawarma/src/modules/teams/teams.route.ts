@@ -7,20 +7,17 @@ import {
   isValidObjectId
 } from "../../middlewares";
 import * as TeamsController from "./teams.controller";
+import { teamMembersRouter } from "../team-members";
 
-const router = Router();
+export const router = Router();
+
+router.use("/:id/team-members", isValidObjectId, teamMembersRouter);
 
 router.use(isAuthenticated, isVerified);
 
-router.post(
-  "/",
-  [checkTeamName],
-  checkValidationResult,
-  TeamsController.create
-);
+router
+  .route("/")
+  .get(TeamsController.list)
+  .post([checkTeamName], checkValidationResult, TeamsController.create);
 
 router.get("/:id", isValidObjectId, TeamsController.listOne);
-
-router.get("/", TeamsController.list);
-
-export { router as teamsRoutes };

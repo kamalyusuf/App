@@ -1,2 +1,2 @@
 export * from "./team.model";
-export { teamsRoutes } from "./teams.route";
+export { router as teamsRouter } from "./teams.route";

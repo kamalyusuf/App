@@ -47,3 +47,9 @@ export const generateBaseStringValidation = (
 
   return base;
 };
+
+export const checkPermissions = body("permissions")
+  .exists()
+  .withMessage("Permissions is required")
+  .isArray()
+  .withMessage("Permissions must be an array");

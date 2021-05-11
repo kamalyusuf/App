@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
 import { Redis } from "ioredis";
-import { IEmailTokenInput, Jobs } from "../types";
+import { IEmailTokenInput, ISendInvitationEmail, Jobs } from "../types";
 
 const message =
   "Queue is not initialized. Initialize by calling" +
@@ -33,6 +33,13 @@ export class EmailQueue {
   async queueForgotPassword(data: IEmailTokenInput) {
     this.ensureQueueIsInitialized();
     await this._queue!.add(Jobs.FORGOT_PASSWORD, data, {
+      removeOnComplete: true
+    });
+  }
+
+  async queueTeamInvitation(data: ISendInvitationEmail) {
+    this.ensureQueueIsInitialized();
+    await this._queue!.add(Jobs.TEAM_INVITATION, data, {
       removeOnComplete: true
     });
   }

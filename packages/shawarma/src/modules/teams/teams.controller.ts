@@ -17,7 +17,6 @@ export const create: RequestHandler = async (req, res) => {
   team.members.push(user.id);
   const member = new TeamMember({
     user: user.id,
-    status: MembershipStatuses.ACCEPTED,
     role: TeamRoles.OWNER,
     team: team.id
   });

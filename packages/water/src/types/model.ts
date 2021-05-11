@@ -3,5 +3,6 @@ export enum Models {
   TEAM = "Team",
   TEAM_MEMBER = "TeamMember",
   ACCOUNT = "Account",
-  PROVIDER = "Provider"
+  PROVIDER = "Provider",
+  INVITE = "Invite"
 }

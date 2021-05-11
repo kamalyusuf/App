@@ -1,4 +1,10 @@
-import { checkEnv, EmailQueue, IEmailTokenInput, Jobs } from "@app/water";
+import {
+  checkEnv,
+  EmailQueue,
+  IEmailTokenInput,
+  ISendInvitationEmail,
+  Jobs
+} from "@app/water";
 import { Job, Worker } from "bullmq";
 import consola from "consola";
 import "dotenv-safe/config";
@@ -15,6 +21,9 @@ const jobs: any = {
   },
   [Jobs.FORGOT_PASSWORD]: async (job: Job<IEmailTokenInput>) => {
     await EmailService.sendForgotPasswordEmail(job.data);
+  },
+  [Jobs.TEAM_INVITATION]: async (job: Job<ISendInvitationEmail>) => {
+    await EmailService.sendInvitationEmail(job.data);
   }
 };
 

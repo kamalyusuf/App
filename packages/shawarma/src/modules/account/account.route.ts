@@ -62,4 +62,4 @@ router.patch("/unlink", AccountController.unlinkProvider);
 
 router.get("/", AccountController.retrieve);
 
-export { router as accountRoutes };
+export { router as accountRouter };

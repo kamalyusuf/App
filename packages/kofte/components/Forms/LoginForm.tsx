@@ -28,11 +28,11 @@ export const LoginForm: React.FC = () => {
         }}
         validateOnChange={false}
       >
-        {({ isSubmitting, isValid, values: { email, password } }) => (
+        {({ isSubmitting, values: { email, password } }) => (
           <Form>
             <Stack spacing={8}>
               <Field name="email">
-                {({ field, form }: FieldProps) => (
+                {({ field }: FieldProps) => (
                   <FormControl>
                     <FormLabel>Email address</FormLabel>
                     <Input {...field} type="email" />

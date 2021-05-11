@@ -10,26 +10,20 @@ export interface ITeam {
 
 export interface ITeamMember {
   id: string;
-  status: MembershipStatuses;
   role: TeamRoles;
-  user: string | IUser;
-  team: string | IUser;
+  user: IUser;
+  team: ITeam;
+  permissions: TeamPermissions[];
   created_at: string;
   updated_at: string;
 }
 
 export enum TeamRoles {
   OWNER = "owner",
-  ADMIN = "admin",
   MEMBER = "member"
 }
 
-export enum MembershipStatuses {
-  PENDING = "pending",
-  ACCEPTED = "accepted",
-  REJECTED = "rejected",
-  REVOKED = "revoked"
-}
+export const SUPPORTED_TEAM_ROLES = [TeamRoles.OWNER, TeamRoles.MEMBER];
 
 export interface ICreateTeam {
   name: string;
