@@ -10,7 +10,6 @@ export interface ITeam {
 
 export interface ITeamMember {
   id: string;
-  status: MembershipStatuses;
   role: TeamRoles;
   user: IUser;
   team: ITeam;
@@ -21,16 +20,10 @@ export interface ITeamMember {
 
 export enum TeamRoles {
   OWNER = "owner",
-  ADMIN = "admin",
   MEMBER = "member"
 }
 
-export enum MembershipStatuses {
-  PENDING = "pending",
-  ACCEPTED = "accepted",
-  REJECTED = "rejected",
-  REVOKED = "revoked"
-}
+export const SUPPORTED_TEAM_ROLES = [TeamRoles.OWNER, TeamRoles.MEMBER];
 
 export interface ICreateTeam {
   name: string;

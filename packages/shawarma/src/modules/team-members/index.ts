@@ -1,2 +1,2 @@
 export * from "./team-member.model";
-export * from "./team-members.route";
+export { router as teamMembersRouter } from "./team-members.route";

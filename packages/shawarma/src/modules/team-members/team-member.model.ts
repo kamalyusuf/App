@@ -1,44 +1,39 @@
 import mongoose, { Document, Schema } from "mongoose";
 import {
-  MembershipStatuses,
   TeamRoles,
   ITeamMember,
   Models,
-  TeamPermissions
+  SUPPORTED_PERMISSIONS,
+  SUPPORTED_TEAM_ROLES
 } from "@app/water";
 
 export type ITeamMemberDoc = Document & ITeamMember;
 
 const TeamMemberSchema = new Schema({
-  status: {
-    type: String,
-    enum: [
-      MembershipStatuses.PENDING,
-      MembershipStatuses.ACCEPTED,
-      MembershipStatuses.REJECTED,
-      MembershipStatuses.REVOKED
-    ],
-    default: MembershipStatuses.PENDING
-  },
   role: {
     type: String,
-    enum: [TeamRoles.OWNER, TeamRoles.ADMIN, TeamRoles.MEMBER],
+    enum: SUPPORTED_TEAM_ROLES,
     default: TeamRoles.MEMBER
   },
   user: {
     type: Schema.Types.ObjectId,
     ref: Models.USER,
-    required: true,
-    index: true
+    required: true
   },
   team: {
     type: Schema.Types.ObjectId,
     ref: Models.TEAM,
     required: true,
     select: false
+  },
+  permissions: {
+    type: [String],
+    required: true,
+    enum: SUPPORTED_PERMISSIONS
   }
 });
 
+TeamMemberSchema.index({ user: 1, team: 1 });
 TeamMemberSchema.set("timestamps", {
   createdAt: "created_at",
   updatedAt: "updated_at"

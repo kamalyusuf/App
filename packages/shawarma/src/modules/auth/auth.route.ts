@@ -58,4 +58,4 @@ router.post(
   AuthController.resetPassword
 );
 
-export { router as authRoutes };
+export { router as authRouter };

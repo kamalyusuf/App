@@ -10,12 +10,12 @@ import { IUser } from "@app/water";
 import { NotFoundError, redis } from "./lib";
 import { globalErrorHandler } from "./middlewares";
 import { Passport } from "./config";
-import { authRoutes } from "./modules/auth";
-import { teamsRoutes } from "./modules/teams";
-import { accountRoutes } from "./modules/account";
-import { providersRoutes } from "./modules/providers";
-import { teamMembersRoutes } from "./modules/team-members";
-import { invitesRoutes } from "./modules/invites";
+import { authRouter } from "./modules/auth";
+import { teamsRouter } from "./modules/teams";
+import { accountRouter } from "./modules/account";
+import { providersRouter } from "./modules/providers";
+import { teamMembersRouter } from "./modules/team-members";
+import { invitesRouter } from "./modules/invites";
 
 declare global {
   namespace Express {
@@ -58,12 +58,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/api/ping", (_, res) => res.send("pong"));
-app.use("/api/account", accountRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/teams", teamsRoutes);
-app.use("/api/providers", providersRoutes);
-app.use("/api/team-members", teamMembersRoutes);
-app.use("/api/invites", invitesRoutes);
+app.use("/api/account", accountRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/team-members", teamMembersRouter);
+app.use("/api/teams", teamsRouter);
+app.use("/api/providers", providersRouter);
+app.use("/api/invites", invitesRouter);
 
 app.use(() => {
   throw new NotFoundError("Route not found");

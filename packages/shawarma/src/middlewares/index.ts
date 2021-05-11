@@ -8,3 +8,4 @@ export * from "./is-unauthenticated";
 export * from "./is-verified";
 export * from "./is-valid-objectid";
 export * from "./reject";
+export * from "./can-invite";

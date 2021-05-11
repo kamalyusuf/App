@@ -1,5 +1,11 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { IInvite, Models } from "@app/water";
+import {
+  IInvite,
+  Models,
+  SUPPORTED_PERMISSIONS,
+  IInvitationStatuses,
+  INVITATION_STATUSES
+} from "@app/water";
 
 type InviteDoc = Document & IInvite;
 
@@ -17,6 +23,16 @@ const InviteSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: Models.TEAM,
     required: true
+  },
+  permissions: {
+    type: [String],
+    required: true,
+    enum: SUPPORTED_PERMISSIONS
+  },
+  status: {
+    type: String,
+    default: IInvitationStatuses.PENDING,
+    enum: INVITATION_STATUSES
   }
 });
 
