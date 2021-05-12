@@ -36,6 +36,9 @@ const InviteSchema = new Schema({
   }
 });
 
+InviteSchema.index({ _id: 1, status: 1 });
+InviteSchema.index({ invite_to_email: 1, team: 1 }, { unique: true });
+
 InviteSchema.set("timestamps", {
   createdAt: "created_at",
   updatedAt: "updated_at"

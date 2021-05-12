@@ -40,3 +40,15 @@ router
     canInvite,
     InvitesController.create
   );
+
+router.post(
+  "/accept",
+  [
+    body("invite_id")
+      .exists()
+      .withMessage("Missing invitation id")
+      .isMongoId()
+      .withMessage("Invalid id")
+  ],
+  InvitesController.accept
+);
