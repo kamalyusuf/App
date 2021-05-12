@@ -16,7 +16,8 @@ const TeamSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: Models.USER,
     required: true,
-    autopopulate: true
+    autopopulate: true,
+    index: true
   },
   members: [
     {
@@ -40,8 +41,6 @@ TeamSchema.set("toJSON", {
     delete ret.members;
   }
 });
-
-TeamSchema.index({ owner: 1 });
 
 TeamSchema.plugin(autoPopulate);
 TeamSchema.plugin(paginate);

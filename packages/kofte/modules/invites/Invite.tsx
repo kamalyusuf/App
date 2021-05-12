@@ -1,5 +1,5 @@
-import React from "react";
-import { IInvitationStatuses, IInvite } from "@app/water";
+import React, { useCallback } from "react";
+import { IInvitationStatuses, IInvite, IInviteActions } from "@app/water";
 import {
   Box,
   Stack,
@@ -10,7 +10,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { BiEnvelope } from "react-icons/bi";
-import { useAcceptTeamInvitationMutation } from "../../hooks";
+import { useInviteActionMutation } from "../../hooks";
 import { useQueryClient } from "react-query";
 
 interface Props {
@@ -33,8 +33,32 @@ const badgeColor = (status: IInvitationStatuses) => {
 };
 
 export const Invite: React.FC<Props> = ({ invite }) => {
-  const { mutateAsync, isLoading } = useAcceptTeamInvitationMutation();
+  const { mutateAsync, isLoading } = useInviteActionMutation();
   const queryClient = useQueryClient();
+
+  const send = async (action: IInviteActions) => {
+    await mutateAsync(
+      { invite_id: invite.id, action },
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries("/teams");
+          queryClient.setQueryData<IInvite[] | undefined>(
+            "/invites",
+            (invites) => {
+              if (invites) {
+                return invites.map((invite) => {
+                  if (invite.id === data.id) {
+                    return data;
+                  }
+                  return invite;
+                });
+              }
+            }
+          );
+        }
+      }
+    );
+  };
 
   return (
     <Stack direction="row" justify="space-between" align="center">
@@ -64,36 +88,19 @@ export const Invite: React.FC<Props> = ({ invite }) => {
       {invite.status === "pending" && (
         <Stack direction="row" align="center" spacing={3}>
           <Box>
-            <Button colorScheme="red">Reject</Button>
+            <Button
+              colorScheme="red"
+              onClick={() => send("reject" as IInviteActions)}
+            >
+              Reject
+            </Button>
           </Box>
           <Box>
             <Button
               colorScheme="blue"
               isLoading={isLoading}
               disabled={isLoading}
-              onClick={async () => {
-                await mutateAsync(
-                  { invite_id: invite.id },
-                  {
-                    onSuccess: (data) => {
-                      queryClient.invalidateQueries("/teams");
-                      queryClient.setQueryData<IInvite[] | undefined>(
-                        "/invites",
-                        (invites) => {
-                          if (invites) {
-                            return invites.map((invite) => {
-                              if (invite.id === data.id) {
-                                return data;
-                              }
-                              return invite;
-                            });
-                          }
-                        }
-                      );
-                    }
-                  }
-                );
-              }}
+              onClick={() => send("accept" as IInviteActions)}
             >
               Accept
             </Button>
