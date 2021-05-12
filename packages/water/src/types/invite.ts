@@ -45,3 +45,15 @@ export const INVITATION_STATUSES = [
 export interface IAcceptInvite {
   invite_id: string;
 }
+
+export enum IInviteActions {
+  ACCEPT = "accept",
+  REJECT = "reject",
+  REVOKE = "revoke"
+}
+
+export const SUPPORTED_ACTIONS = [
+  IInviteActions.ACCEPT,
+  IInviteActions.REJECT,
+  IInviteActions.REVOKE
+];

@@ -1,5 +1,10 @@
-import { IAcceptInvite, ICreateInvite, IInvitationStatuses } from "@app/water";
-import { RequestHandler } from "express";
+import {
+  IAcceptInvite,
+  ICreateInvite,
+  IInvitationStatuses,
+  IInviteActions
+} from "@app/water";
+import { RequestHandler, Request, Response } from "express";
 import mongoose, { ClientSession } from "mongoose";
 import {
   emailQueue,
@@ -11,7 +16,7 @@ import {
 import { TeamMember } from "../team-members";
 import { Team } from "../teams";
 import { User } from "../users";
-import { Invite } from "./invite.model";
+import { Invite, InviteDoc } from "./invite.model";
 
 export const create: RequestHandler = async (req, res) => {
   const { invite_to_email, team_id, permissions } = req.body as ICreateInvite;
@@ -47,27 +52,17 @@ export const list: RequestHandler = async (req, res) => {
   res.send(invites);
 };
 
-export const accept: RequestHandler = async (req, res) => {
-  const { invite_id } = req.body as IAcceptInvite;
-
-  const invite = await Invite.findOne({
-    _id: invite_id,
-    status: IInvitationStatuses.PENDING
-  });
-  if (!invite) {
-    throw new NotFoundError("Invite does not exist");
-  }
-
+const accept = async (req: Request, res: Response, invite: InviteDoc) => {
   const user = await User.findOne({ email: invite.invite_to_email });
   if (!user) {
     throw new Error("User does not exist");
   }
 
-  if (invite.invite_to_email !== user.email) {
+  if (user.email !== req.user!.email) {
     throw new NotAuthorizedError();
   }
 
-  if (await Team.exists({ members: user.id })) {
+  if (await Team.exists({ _id: invite.team, members: user.id })) {
     throw new NotAuthorizedError();
   }
 
@@ -102,4 +97,48 @@ export const accept: RequestHandler = async (req, res) => {
   await invite.populate("invited_by").populate("team").execPopulate();
 
   res.send(invite);
+};
+
+const reject = async (req: Request, res: Response, invite: InviteDoc) => {
+  const user = await User.findOne({ email: invite.invite_to_email });
+  if (!user) {
+    throw new Error("User does not exist");
+  }
+
+  if (user.email !== req.user!.email) {
+    throw new NotAuthorizedError();
+  }
+
+  invite.set({ status: IInvitationStatuses.REJECTED });
+  await invite.save();
+
+  await invite.populate("invited_by").populate("team").execPopulate();
+
+  res.send(invite);
+};
+
+const revoke = (res: Response, invite: InviteDoc) => {
+  res.send("Finna revoke");
+};
+
+export const actions: RequestHandler = async (req, res) => {
+  const action = req.query.action as IInviteActions;
+  const { invite_id } = req.body as IAcceptInvite;
+
+  const invite = await Invite.findOne({
+    _id: invite_id,
+    status: IInvitationStatuses.PENDING
+  });
+  if (!invite) {
+    throw new NotFoundError("Invite does not exist");
+  }
+
+  switch (action) {
+    case IInviteActions.ACCEPT:
+      return accept(req, res, invite);
+    case IInviteActions.REJECT:
+      return reject(req, res, invite);
+    case IInviteActions.REVOKE:
+      return revoke(res, invite);
+  }
 };

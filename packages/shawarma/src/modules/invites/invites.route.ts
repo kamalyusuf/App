@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from "express";
 import * as InvitesController from "./invites.controller";
 import {
@@ -7,8 +8,8 @@ import {
   isVerified,
   checkValidationResult
 } from "../../middlewares";
-import { body, check } from "express-validator";
-import { SUPPORTED_PERMISSIONS } from "@app/water";
+import { body, check, query } from "express-validator";
+import { SUPPORTED_PERMISSIONS, SUPPORTED_ACTIONS } from "@app/water";
 
 export const router = Router();
 
@@ -42,13 +43,19 @@ router
   );
 
 router.post(
-  "/accept",
+  "/actions",
   [
+    query("action")
+      .exists()
+      .withMessage("Action must be specified")
+      .isIn(SUPPORTED_ACTIONS)
+      .withMessage("Invalid action"),
     body("invite_id")
       .exists()
       .withMessage("Missing invitation id")
       .isMongoId()
       .withMessage("Invalid id")
   ],
-  InvitesController.accept
+  checkValidationResult,
+  InvitesController.actions
 );

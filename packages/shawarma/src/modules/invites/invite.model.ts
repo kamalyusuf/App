@@ -8,7 +8,7 @@ import {
 } from "@app/water";
 import uniqueValidator from "mongoose-unique-validator";
 
-type InviteDoc = Document & IInvite;
+export type InviteDoc = Document & IInvite;
 
 const InviteSchema = new Schema({
   invited_by: {
