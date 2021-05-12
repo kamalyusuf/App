@@ -1,19 +1,24 @@
+import { IAcceptInvite, ICreateInvite, IInvitationStatuses } from "@app/water";
 import { RequestHandler } from "express";
-import { Invite } from "./invite.model";
-import { ICreateInvite, IAcceptInvite, IInvitationStatuses } from "@app/water";
+import mongoose, { ClientSession } from "mongoose";
 import {
   emailQueue,
   InternalServerError,
   NotAuthorizedError,
-  NotFoundError
+  NotFoundError,
+  BadRequestError
 } from "../../lib";
 import { TeamMember } from "../team-members";
 import { Team } from "../teams";
 import { User } from "../users";
-import mongoose, { ClientSession } from "mongoose";
+import { Invite } from "./invite.model";
 
 export const create: RequestHandler = async (req, res) => {
   const { invite_to_email, team_id, permissions } = req.body as ICreateInvite;
+
+  if (await Invite.exists({ invite_to_email, team: team_id as any })) {
+    throw new BadRequestError(`Invite to ${invite_to_email} already exists`);
+  }
 
   const invite = await Invite.create({
     invited_by: req.user!.id,

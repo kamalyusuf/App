@@ -2,10 +2,9 @@ import { AddIcon } from "@chakra-ui/icons";
 import { IconButton, useDisclosure, List } from "@chakra-ui/react";
 import React from "react";
 import { useTeamsQuery } from "../../hooks";
-import { Container } from "../Container";
-import { CreateTeamModal } from "../Modals";
-import { CardHeader, LoadingSpinner } from "../UI";
+import { Container, CardHeader, LoadingSpinner } from "../../components";
 import { Team } from "./Team";
+import { CreateTeamModal } from "./CreateTeamModal";
 
 export const Teams: React.FC = () => {
   const { data, loading, refetch } = useTeamsQuery();

@@ -6,6 +6,7 @@ import {
   IInvitationStatuses,
   INVITATION_STATUSES
 } from "@app/water";
+import uniqueValidator from "mongoose-unique-validator";
 
 type InviteDoc = Document & IInvite;
 
@@ -49,6 +50,10 @@ InviteSchema.set("toJSON", {
     ret.id = ret._id;
     delete ret._id;
   }
+});
+
+InviteSchema.plugin(uniqueValidator, {
+  message: `NO`
 });
 
 export const Invite = mongoose.model<InviteDoc>(

@@ -2,9 +2,9 @@ import React from "react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { NavBarLayout } from "../../components/Layouts";
-import { Invites } from "../../components/Invites";
-import { WaitForEmailVerified } from "../../components/Auth/WaitForEmailVerified";
+import { WaitForEmailVerified } from "../../modules/auth";
 import { withAuth } from "../../hocs/withAuth";
+import { Invites } from "../../modules/invites";
 
 const InvitesPage: NextPage = () => {
   return (

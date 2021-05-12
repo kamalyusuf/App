@@ -1,11 +1,10 @@
 import { Box } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React from "react";
-import { Container } from "../components/Container";
-import { NavBarLayout } from "../components/Layouts";
+import { Container, NavBarLayout } from "../components";
 import Head from "next/head";
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   return (
     <>
       <Head>
@@ -22,4 +21,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;

@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 import React from "react";
 import { useMeQuery } from "../../hooks";
 import { NavBar } from "../NavBar";
-import { VerifyEmailBanner } from "../VerifyEmailBanner";
+import { VerifyEmailBanner } from "../../modules/auth/VerifyEmailBanner";
 
 interface Props {
   showVerifyEmailBanner?: boolean;

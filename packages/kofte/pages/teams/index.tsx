@@ -1,9 +1,9 @@
 import { NextPage } from "next";
 import React from "react";
 import Head from "next/head";
-import { NavBarLayout } from "../../components/Layouts";
-import { WaitForEmailVerified } from "../../components/Auth/WaitForEmailVerified";
-import { Teams } from "../../components/Teams";
+import { NavBarLayout } from "../../components";
+import { WaitForEmailVerified } from "../../modules/auth";
+import { Teams } from "../../modules/teams";
 import { withAuth } from "../../hocs/withAuth";
 
 const TeamsPage: NextPage = () => {

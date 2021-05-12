@@ -10,10 +10,10 @@ import {
 import { NextPage } from "next";
 import React, { useState } from "react";
 import { Formik, Field, Form, FieldProps } from "formik";
-import { Card, SuccessMessage } from "../../components/UI";
+import { Card, SuccessMessage } from "../../components";
 import { useForgotPasswordMutation } from "../../hooks";
 
-const LoginForgot: NextPage = () => {
+const LoginForgotPage: NextPage = () => {
   const { mutateAsync } = useForgotPasswordMutation();
   const [done, setDone] = useState<boolean>(false);
 
@@ -73,6 +73,4 @@ const LoginForgot: NextPage = () => {
   );
 };
 
-export default LoginForgot;
-
-// If we find a match, you'll get an email with a link to reset your password shortly
+export default LoginForgotPage;

@@ -14,6 +14,7 @@ export const globalErrorHandler = (
   }
 
   // @todo: capture with Sentry
+  console.log("[GlobalErrorHandler]");
   logger.error(error);
   const message = error.message || "Internal Server Error";
   res.status(error.status || 500).send({ errors: [{ message }] });

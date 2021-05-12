@@ -1,17 +1,32 @@
 import { Button, FormControl, FormLabel, Input, Stack } from "@chakra-ui/react";
 import React from "react";
-import { InputErrorMessage, PasswordField } from "../UI";
-import { Formik, Field, Form, ErrorMessage, FieldProps } from "formik";
+import { InputErrorMessage, PasswordField } from "../../components";
+import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
+import * as yup from "yup";
 import { api } from "../../lib";
-import { IUser } from "@app/water";
+import { IResponseError, IUser } from "@app/water";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
-import { transformErrors } from "./RegisterForm";
 
-export const LoginForm: React.FC = () => {
+export const transformErrors = (errors: Required<IResponseError>[]) => {
+  const error: Record<string, string> = {};
+  errors.forEach(({ message, field }) => {
+    error[field] = message;
+  });
+  return error;
+};
+
+const validationSchema = yup.object({
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required")
+});
+
+export const RegisterForm: React.FC = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const redirect = router.asPath.split("redirect=")[1];
 
   return (
     <>
@@ -19,16 +34,18 @@ export const LoginForm: React.FC = () => {
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           try {
-            const { data } = await api.post<IUser>("/auth/signin", values);
+            const { data } = await api.post<IUser>("/auth/signup", values);
             queryClient.setQueryData("/auth/me", () => data);
-            router.replace(redirect ? redirect : "/account");
+            router.replace("/account");
           } catch (e) {
             setErrors(transformErrors(e.response.data.errors));
           }
         }}
-        validateOnChange={false}
+        validationSchema={validationSchema}
+        validateOnMount
+        validateOnChange
       >
-        {({ isSubmitting, values: { email, password } }) => (
+        {({ isSubmitting, isValid }) => (
           <Form>
             <Stack spacing={8}>
               <Field name="email">
@@ -46,10 +63,10 @@ export const LoginForm: React.FC = () => {
                 colorScheme="blue"
                 size="lg"
                 fontSize="md"
-                disabled={isSubmitting || !email || !password}
+                disabled={!isValid || isSubmitting}
                 isLoading={isSubmitting}
               >
-                Sign in
+                Create my account
               </Button>
             </Stack>
           </Form>
