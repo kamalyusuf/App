@@ -15,7 +15,8 @@ import { capitalize } from "lodash";
 import { TeamMembers } from "../../../modules/team-members";
 import { InviteUserToTeamModal } from "../../../modules/invites";
 import { withAuth } from "../../../hocs/withAuth";
-import { isTeamOwner, hasPermission } from "../../../lib";
+import { isTeamOwner as amITeamOwner, hasPermission } from "../../../lib";
+import { IUser } from "@app/water";
 
 const TeamPage: NextPage = () => {
   const router = useRouter();
@@ -30,9 +31,10 @@ const TeamPage: NextPage = () => {
   if (!team || !members) return null;
 
   const meAsMember = members.find((member) => member.user.id === me?.id);
+  const isTeamOwner = amITeamOwner(meAsMember);
 
   const InviteMemberButton =
-    isTeamOwner(meAsMember) || hasPermission(meAsMember) ? (
+    isTeamOwner || hasPermission(meAsMember) ? (
       <Box>
         <Button colorScheme="blue" size="sm" variant="outline" onClick={onOpen}>
           Invite
@@ -65,7 +67,12 @@ const TeamPage: NextPage = () => {
                   {isLoadingMembers ? (
                     <LoadingSpinner centered={false} />
                   ) : (
-                    members?.length && <TeamMembers members={members} />
+                    members?.length && (
+                      <TeamMembers
+                        members={members}
+                        teamOwnerId={(team.owner as IUser).id}
+                      />
+                    )
                   )}
                 </Box>
               </Stack>

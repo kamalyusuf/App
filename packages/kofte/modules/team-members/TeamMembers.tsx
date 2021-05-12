@@ -5,13 +5,14 @@ import { TeamMember } from "./TeamMember";
 
 interface Props {
   members: ITeamMember[];
+  teamOwnerId: string;
 }
 
-export const TeamMembers: React.FC<Props> = ({ members }) => {
+export const TeamMembers: React.FC<Props> = ({ members, teamOwnerId }) => {
   return (
     <List spacing={3}>
       {members.map((member) => (
-        <TeamMember key={member.id} member={member} />
+        <TeamMember key={member.id} member={member} teamOwnerId={teamOwnerId} />
       ))}
     </List>
   );
