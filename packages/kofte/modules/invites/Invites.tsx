@@ -1,8 +1,7 @@
 import React from "react";
 import { Stack } from "@chakra-ui/react";
 import { Invite } from "./Invite";
-import { Container } from "../Container";
-import { CardHeader, LoadingSpinner } from "../UI";
+import { Container, CardHeader, LoadingSpinner } from "../../components";
 import { useInvitesQuery } from "../../hooks";
 
 export const Invites: React.FC = () => {

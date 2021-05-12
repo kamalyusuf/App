@@ -52,7 +52,7 @@ const YouAreLoggedInWithAnotherAccount = (
   </Center>
 );
 
-const Verify: NextPage = () => {
+const VerifyPage: NextPage = () => {
   const token = useSearchParams("token");
   const email = useSearchParams("email");
   const { mutateAsync, isLoading } = useVerifyEmailMutation();
@@ -129,4 +129,4 @@ const Verify: NextPage = () => {
   );
 };
 
-export default withAuth(Verify);
+export default withAuth(VerifyPage);

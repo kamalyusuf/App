@@ -7,7 +7,7 @@ import { queryClient } from "../lib";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { wrapper } from "../redux";
 import React from "react";
-import { ErrorToast } from "../components/ErrorToast";
+import { ErrorToast } from "../modules/errors";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";

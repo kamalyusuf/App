@@ -2,15 +2,18 @@ import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import { WaitForEmailVerified } from "../../../components/Auth/WaitForEmailVerified";
-import { Container } from "../../../components/Container";
-import { NavBarLayout } from "../../../components/Layouts";
-import { LoadingSpinner, CardHeader } from "../../../components/UI";
+import { WaitForEmailVerified } from "../../../modules/auth";
+import {
+  Container,
+  NavBarLayout,
+  LoadingSpinner,
+  CardHeader
+} from "../../../components";
 import { useTeamQuery, useTeamMembersQuery, useMeQuery } from "../../../hooks";
 import { Box, Text, Stack, Button, useDisclosure } from "@chakra-ui/react";
 import { capitalize } from "lodash";
-import { TeamMembers } from "../../../components/TeamMembers";
-import { InviteUserToTeamModal } from "../../../components/Modals";
+import { TeamMembers } from "../../../modules/team-members";
+import { InviteUserToTeamModal } from "../../../modules/invites";
 import { withAuth } from "../../../hocs/withAuth";
 import { isTeamOwner, hasPermission } from "../../../lib";
 

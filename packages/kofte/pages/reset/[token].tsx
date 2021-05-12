@@ -3,7 +3,7 @@ import { Form, Formik } from "formik";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Card, PasswordField } from "../../components/UI";
+import { Card, PasswordField } from "../../components";
 import { useResetPasswordMutation } from "../../hooks";
 import * as yup from "yup";
 
@@ -20,7 +20,7 @@ const validationSchema = yup.object({
     .required("Password is required")
 });
 
-const ResetPassword: NextPage = () => {
+const ResetPasswordPage: NextPage = () => {
   const router = useRouter();
   const token = router.query.token as string;
   const { mutateAsync } = useResetPasswordMutation();
@@ -80,4 +80,4 @@ const ResetPassword: NextPage = () => {
   );
 };
 
-export default ResetPassword;
+export default ResetPasswordPage;

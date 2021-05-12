@@ -1,12 +1,12 @@
 import { Box, Heading, useColorModeValue, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React from "react";
-import { RegisterForm } from "../../components/Forms";
-import { Card, Link } from "../../components/UI";
+import { RegisterForm } from "../../modules/auth";
+import { Card, Link } from "../../components";
 import { withNoAuth } from "../../hocs/withNoAuth";
 import Head from "next/head";
 
-const Register: NextPage = () => {
+const RegisterPage: NextPage = () => {
   return (
     <>
       <Head>
@@ -35,4 +35,4 @@ const Register: NextPage = () => {
   );
 };
 
-export default withNoAuth(Register);
+export default withNoAuth(RegisterPage);

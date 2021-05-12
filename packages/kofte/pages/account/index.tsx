@@ -1,14 +1,15 @@
 import { Box, Icon } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React, { useState } from "react";
-import { NavBarLayout } from "../../components/Layouts";
 import {
   Card,
   CardProperty,
   CardHeader,
   CardContent,
-  LoadingSpinner
-} from "../../components/UI";
+  LoadingSpinner,
+  NavBarLayout,
+  ConnectAccountButton
+} from "../../components";
 import { withAuth } from "../../hocs/withAuth";
 import {
   useAccountQuery,
@@ -18,7 +19,6 @@ import {
 import { MdVerifiedUser, MdCancel } from "react-icons/md";
 import { format, parseISO } from "date-fns";
 import Head from "next/head";
-import { ConnectAccountButton } from "../../components/ConnectAccountButton";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IUser, IAccount } from "@app/water";
@@ -31,7 +31,7 @@ const Icons: Record<string, IconType> = {
   github: FaGithub
 };
 
-const Account: NextPage = () => {
+const AccountPage: NextPage = () => {
   const { account, loading: isLoadingAccount } = useAccountQuery();
   const { providers, loading: isLoadingProviders } = useProvidersQuery();
   const { mutateAsync } = useUnlinkProviderMutation();
@@ -130,4 +130,4 @@ const Account: NextPage = () => {
   );
 };
 
-export default withAuth(Account);
+export default withAuth(AccountPage);
