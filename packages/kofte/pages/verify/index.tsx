@@ -1,23 +1,23 @@
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text
+} from "@chakra-ui/react";
+import { Field, FieldProps, Form, Formik } from "formik";
 import { NextPage } from "next";
+import Head from "next/head";
 import React, { useState } from "react";
+import { withAuth } from "../../hocs/withAuth";
 import {
   useMeQuery,
   useSearchParams,
   useVerifyEmailMutation
 } from "../../hooks";
-import {
-  Box,
-  Center,
-  Stack,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  Text
-} from "@chakra-ui/react";
-import { Formik, Form, Field, FieldProps } from "formik";
-import { withAuth } from "../../hocs/withAuth";
-import Head from "next/head";
 
 const InvalidEmailOrToken = (
   <Center w="100%" h="100%" bg="gray.50">
@@ -59,11 +59,17 @@ const Verify: NextPage = () => {
   const [verified, setVerified] = useState(false);
   const { me } = useMeQuery();
 
-  if (!token || !email) return InvalidEmailOrToken;
+  if (!token || !email) {
+    return InvalidEmailOrToken;
+  }
 
-  if (email !== me?.email) return YouAreLoggedInWithAnotherAccount;
+  if (email !== me?.email) {
+    return YouAreLoggedInWithAnotherAccount;
+  }
 
-  if (me?.email_verified) return AlreadyVerified;
+  if (me?.email_verified) {
+    return AlreadyVerified;
+  }
 
   return verified ? (
     EmailVerified
