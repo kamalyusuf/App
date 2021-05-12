@@ -6,12 +6,13 @@ import { WaitForEmailVerified } from "../../../components/Auth/WaitForEmailVerif
 import { Container } from "../../../components/Container";
 import { NavBarLayout } from "../../../components/Layouts";
 import { LoadingSpinner, CardHeader } from "../../../components/UI";
-import { useTeamQuery, useTeamMembersQuery } from "../../../hooks";
+import { useTeamQuery, useTeamMembersQuery, useMeQuery } from "../../../hooks";
 import { Box, Text, Stack, Button, useDisclosure } from "@chakra-ui/react";
 import { capitalize } from "lodash";
 import { TeamMembers } from "../../../components/TeamMembers";
 import { InviteUserToTeamModal } from "../../../components/Modals";
 import { withAuth } from "../../../hocs/withAuth";
+import { isTeamOwner, hasPermission } from "../../../lib";
 
 const TeamPage: NextPage = () => {
   const router = useRouter();
@@ -19,10 +20,22 @@ const TeamPage: NextPage = () => {
   const { team, loading } = useTeamQuery(id);
   const { members, loading: isLoadingMembers } = useTeamMembersQuery(id);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { me } = useMeQuery();
 
   if (loading) return <LoadingSpinner />;
 
-  if (!team) return null;
+  if (!team || !members) return null;
+
+  const meAsMember = members.find((member) => member.user.id === me?.id);
+
+  const InviteMemberButton =
+    isTeamOwner(meAsMember) || hasPermission(meAsMember) ? (
+      <Box>
+        <Button colorScheme="blue" size="sm" variant="outline" onClick={onOpen}>
+          Invite
+        </Button>
+      </Box>
+    ) : undefined;
 
   return (
     <>
@@ -39,18 +52,7 @@ const TeamPage: NextPage = () => {
               <CardHeader
                 title={capitalize(team.name)}
                 p={false}
-                action={
-                  <Box>
-                    <Button
-                      colorScheme="blue"
-                      size="sm"
-                      variant="outline"
-                      onClick={onOpen}
-                    >
-                      Invite
-                    </Button>
-                  </Box>
-                }
+                action={InviteMemberButton}
               />
               <Stack>
                 <Box>

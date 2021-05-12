@@ -9,7 +9,7 @@ interface Props {
 
 export const TeamMembers: React.FC<Props> = ({ members }) => {
   return (
-    <List>
+    <List spacing={3}>
       {members.map((member) => (
         <TeamMember key={member.id} member={member} />
       ))}

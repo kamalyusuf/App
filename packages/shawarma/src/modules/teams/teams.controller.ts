@@ -1,5 +1,5 @@
 import mongoose, { ClientSession, PaginateOptions } from "mongoose";
-import { ICreateTeam, MembershipStatuses, TeamRoles } from "@app/water";
+import { ICreateTeam, TeamRoles } from "@app/water";
 import { RequestHandler } from "express";
 import { Team } from "./team.model";
 import { BadRequestError, InternalServerError, NotFoundError } from "../../lib";

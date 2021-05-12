@@ -41,3 +41,7 @@ export const INVITATION_STATUSES = [
   IInvitationStatuses.REJECTED,
   IInvitationStatuses.REVOKED
 ];
+
+export interface IAcceptInvite {
+  invite_id: string;
+}
