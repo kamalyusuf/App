@@ -1,4 +1,8 @@
-import { ICreateInvite, SUPPORTED_PERMISSIONS } from "@app/water";
+import {
+  ICreateInvite,
+  TeamPermissions,
+  SUPPORTED_PERMISSIONS
+} from "@app/water";
 import { RequestHandler } from "express";
 import { NotAuthorizedError, NotFoundError, BadRequestError } from "../lib";
 import { TeamMember } from "../modules/team-members";
@@ -33,9 +37,7 @@ export const canInvite: RequestHandler = async (req, _, next) => {
     throw new NotAuthorizedError();
   }
 
-  const hasPermission = SUPPORTED_PERMISSIONS.some((permission) =>
-    member.permissions.includes(permission)
-  );
+  const hasPermission = member.permissions.includes(TeamPermissions.CAN_INVITE);
 
   if (!hasPermission) {
     throw new NotAuthorizedError();
