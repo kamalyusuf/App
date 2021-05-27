@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 import { AxiosError } from "axios";
 import { IInvite, IInviteActions } from "@app/water";
 
@@ -8,12 +8,12 @@ interface Body {
 }
 
 export const useInviteActionMutation = () => {
-  const { doRequest } = useRequest<IInvite, Body>({
+  const { send } = useApi<IInvite, Body>({
     url: "/invites/actions",
     method: "post"
   });
 
   return useMutation<IInvite, AxiosError, Body & { action: IInviteActions }>(
-    ({ invite_id, action }) => doRequest({ invite_id }, { action })
+    ({ invite_id, action }) => send({ invite_id }, { action })
   );
 };

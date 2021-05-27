@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 import { ITeam } from "@app/water";
 import { AxiosError } from "axios";
 
@@ -8,12 +8,10 @@ interface Body {
 }
 
 export const useCreateTeamMutation = () => {
-  const { doRequest } = useRequest<ITeam, Body>({
+  const { send } = useApi<ITeam, Body>({
     url: "/teams",
     method: "post"
   });
 
-  return useMutation<ITeam, AxiosError, Body>(({ name }) =>
-    doRequest({ name })
-  );
+  return useMutation<ITeam, AxiosError, Body>(({ name }) => send({ name }));
 };

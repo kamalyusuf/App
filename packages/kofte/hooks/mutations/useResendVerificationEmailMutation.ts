@@ -1,15 +1,15 @@
 import { AxiosError } from "axios";
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 
 interface R {
   message: string;
 }
 
 export const useResendVerificationEmailMutation = () => {
-  const { doRequest } = useRequest<R>({
+  const { send } = useApi<R>({
     url: "/auth/verify/re",
     method: "post"
   });
-  return useMutation<R, AxiosError, {}>(doRequest);
+  return useMutation<R, AxiosError, {}>(send);
 };

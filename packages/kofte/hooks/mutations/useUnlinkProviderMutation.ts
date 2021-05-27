@@ -1,15 +1,15 @@
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 import { IAccount } from "@app/water";
 import { AxiosError } from "axios";
 
 export const useUnlinkProviderMutation = () => {
-  const { doRequest } = useRequest<IAccount>({
+  const { send } = useApi<IAccount>({
     url: "/account/unlink",
     method: "patch"
   });
 
   return useMutation<IAccount, AxiosError, { provider: string }>(
-    ({ provider }) => doRequest({}, { provider })
+    ({ provider }) => send({}, { provider })
   );
 };

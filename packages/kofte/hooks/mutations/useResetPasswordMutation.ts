@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 import { IResetPassword } from "@app/water";
 import { AxiosError } from "axios";
 
@@ -8,12 +8,12 @@ interface R {
 }
 
 export const useResetPasswordMutation = () => {
-  const { doRequest } = useRequest<R, IResetPassword>({
+  const { send } = useApi<R, IResetPassword>({
     url: "/auth/reset",
     method: "post"
   });
 
   return useMutation<R, AxiosError, IResetPassword>(({ token, password }) =>
-    doRequest({ token, password })
+    send({ token, password })
   );
 };

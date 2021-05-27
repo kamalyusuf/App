@@ -1,12 +1,12 @@
 import { AxiosError } from "axios";
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 
 export const useLogoutMutation = () => {
-  const { doRequest } = useRequest<null>({
+  const { send } = useApi<null>({
     url: "/auth/signout",
     method: "post"
   });
 
-  return useMutation<null, AxiosError, {}>(doRequest);
+  return useMutation<null, AxiosError, {}>(send);
 };

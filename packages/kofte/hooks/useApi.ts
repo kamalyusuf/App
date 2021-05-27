@@ -1,15 +1,12 @@
 import { api } from "../lib";
 
-interface IUseRequest {
+interface IUseApi {
   url: string;
   method: "get" | "put" | "post" | "patch" | "delete";
 }
 
-export const useRequest = <ResponseData, RequestBody = {}>({
-  url,
-  method
-}: IUseRequest) => {
-  const doRequest = async (body?: RequestBody, params?: object) => {
+export const useApi = <TData, TBody = {}>({ url, method }: IUseApi) => {
+  const send = async (body?: TBody, params?: object) => {
     const isNotGetOrDelete = method !== "get" && method !== "delete";
 
     if (isNotGetOrDelete && !body) {
@@ -17,7 +14,7 @@ export const useRequest = <ResponseData, RequestBody = {}>({
     }
 
     try {
-      const { data } = await api[method]<ResponseData>(
+      const { data } = await api[method]<TData>(
         url,
         isNotGetOrDelete ? body : undefined,
         { params }
@@ -28,5 +25,5 @@ export const useRequest = <ResponseData, RequestBody = {}>({
     }
   };
 
-  return { doRequest };
+  return { send };
 };

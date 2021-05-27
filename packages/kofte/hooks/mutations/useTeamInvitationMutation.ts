@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { useRequest } from "../useRequest";
+import { useApi } from "../useApi";
 import { IInvite, TeamPermissions } from "@app/water";
 import { AxiosError } from "axios";
 
@@ -10,13 +10,13 @@ interface Body {
 }
 
 export const useTeamInvitationMutation = () => {
-  const { doRequest } = useRequest<IInvite, Body>({
+  const { send } = useApi<IInvite, Body>({
     url: "/invites",
     method: "post"
   });
 
   return useMutation<IInvite, AxiosError, Body>(
     ({ team_id, invite_to_email, permissions }) =>
-      doRequest({ team_id, invite_to_email, permissions })
+      send({ team_id, invite_to_email, permissions })
   );
 };
