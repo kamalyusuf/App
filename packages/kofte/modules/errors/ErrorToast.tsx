@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useToastStore } from "../../hooks";
 import { useToast } from "@chakra-ui/react";
+import { useToastStore } from "../../store";
 
 export const ErrorToast: React.FC = () => {
   const toast = useToast();

@@ -5,7 +5,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "../lib";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { wrapper } from "../redux";
 import React from "react";
 import { ErrorToast } from "../modules/errors";
 import Router from "next/router";
@@ -34,4 +33,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default wrapper.withRedux(MyApp);
+export default MyApp;

@@ -1,7 +1,7 @@
 import { IResponseError } from "@app/water";
 import { AxiosError } from "axios";
 import { QueryClient, QueryFunction } from "react-query";
-import { showErrorToast } from "../hooks";
+import { useToastStore } from "../store";
 import { api } from "./api";
 
 const defaultQueryFn: QueryFunction = async ({ queryKey }) => {
@@ -29,7 +29,7 @@ const onError = (error: any) => {
   }
 
   messages.forEach((e) => {
-    showErrorToast(e);
+    useToastStore.getState().show(e);
   });
 };
 
