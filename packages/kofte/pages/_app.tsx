@@ -10,6 +10,7 @@ import { ErrorToast } from "../modules/errors";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { SocketHandler, SocketProvider } from "../modules/socket";
 
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
@@ -23,8 +24,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider>
-        <Component {...pageProps} />
-        <ErrorToast />
+        <SocketProvider>
+          <Component {...pageProps} />
+          <SocketHandler />
+          <ErrorToast />
+        </SocketProvider>
         {process.env.NODE_ENV === "development" && (
           <ReactQueryDevtools initialIsOpen={false} />
         )}

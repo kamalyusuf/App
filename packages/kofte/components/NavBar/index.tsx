@@ -1,17 +1,19 @@
 import { Box, Stack, Button } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "../UI";
 import NextLink from "next/link";
 import { Container } from "../Container";
 import { useQueryClient } from "react-query";
 import { useLogoutMutation, useMeQuery } from "../../hooks";
 import { useRouter } from "next/router";
+import { SocketContext } from "../../modules/socket";
 
 export const NavBar: React.FC = () => {
   const { me } = useMeQuery();
   const { isLoading, mutateAsync } = useLogoutMutation();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { socket, setSocket } = useContext(SocketContext);
 
   const logout = async () => {
     await mutateAsync(
@@ -19,6 +21,8 @@ export const NavBar: React.FC = () => {
       {
         onSuccess: () => {
           queryClient.resetQueries();
+          socket?.disconnect();
+          setSocket(null);
           router.replace("/");
         }
       }

@@ -27,32 +27,32 @@ const app: Application = express();
 
 const RedisStore = connectRedis(session);
 
+const sessionmw = session({
+  store: new RedisStore({
+    client: redis,
+    disableTouch: true,
+    prefix: "app:session::"
+  }),
+  name: process.env.SESSION_NAME as string,
+  secret: process.env.SESSION_SECRET as string,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+    sameSite: "lax"
+    // secure: __prod__
+    // domain  : __prod__ ? "populate here" : "undefined"
+  }
+});
+
 Passport.init(passport);
 
 app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.KOFTE_URL, credentials: true }));
 app.use(express.json());
 
-app.use(
-  session({
-    store: new RedisStore({
-      client: redis,
-      disableTouch: true,
-      prefix: "app:session::"
-    }),
-    name: process.env.SESSION_NAME as string,
-    secret: process.env.SESSION_SECRET as string,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true,
-      sameSite: "lax"
-      // secure: __prod__
-      // domain  : __prod__ ? "populate here" : "undefined"
-    }
-  })
-);
+app.use(sessionmw);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -71,4 +71,4 @@ app.use(() => {
 
 app.use(globalErrorHandler);
 
-export { app };
+export { app, sessionmw, passport };

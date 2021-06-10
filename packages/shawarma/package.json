@@ -21,6 +21,7 @@
   "dependencies": {
     "@app/water": "1.0.0",
     "argon2": "^0.27.2",
+    "colors": "^1.4.0",
     "connect-redis": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv-safe": "^8.2.0",
@@ -42,7 +43,9 @@
     "passport-local": "^1.0.0",
     "pino": "^6.11.2",
     "pino-pretty": "^4.7.1",
-    "rate-limit-redis": "^2.1.0"
+    "rate-limit-redis": "^2.1.0",
+    "socket.io": "^4.1.2",
+    "socket.io-redis": "^6.1.1"
   },
   "devDependencies": {
     "@types/connect-redis": "^0.0.16",
