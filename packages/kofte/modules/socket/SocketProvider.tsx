@@ -16,7 +16,7 @@ export const SocketContext = React.createContext<Context>({
 });
 
 const connect = (): Promise<Socket> => {
-  return new Promise<Socket>((resolve, reject) => {
+  return new Promise<Socket>((resolve) => {
     const socket = io(process.env.NEXT_PUBLIC_API_URL as string, {
       withCredentials: true,
       rememberUpgrade: true
@@ -26,7 +26,9 @@ const connect = (): Promise<Socket> => {
   });
 };
 
-export const SocketProvider: React.FC = ({ children }) => {
+interface Props {}
+
+export const SocketProvider: React.FC<Props> = ({ children }) => {
   const [socket, setSocket] = useState<S>(null);
   const isConnecting = useRef(false);
   const { me } = useMeQuery();

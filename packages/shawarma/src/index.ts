@@ -85,6 +85,12 @@ async function main() {
       invite
     });
   });
+
+  emitter.on("invite:accept", ({ invite }: { invite: IInvite }) => {
+    socketService.emitIfExists(invite.invited_by.email, "invite:accept", {
+      invite
+    });
+  });
 }
 
 main().catch((e) => {

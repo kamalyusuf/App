@@ -100,6 +100,8 @@ const accept = async (req: Request, res: Response, invite: InviteDoc) => {
 
   await invite.populate("invited_by").populate("team").execPopulate();
 
+  emitter.emit("invite:accept", { invite });
+
   res.send(invite);
 };
 
