@@ -1,33 +1,27 @@
-import {
-  checkEnv,
-  EmailQueue,
-  IEmailTokenInput,
-  ISendInvitationEmail,
-  Jobs
-} from "@app/water";
-import { Job, Worker } from "bullmq";
+import { checkEnv, EmailQueue, Jobs, MyJobs } from "@app/water";
+import { Worker } from "bullmq";
 import consola from "consola";
 import "dotenv-safe/config";
 import { redis } from "./lib/redis";
-import { EmailService } from "./services/Email";
+import * as EmailService from "./services/Email";
 
 const emailQueue = new EmailQueue();
 
 emailQueue.init(redis);
 
-const jobs: any = {
-  [Jobs.EMAIL_VERIFICATION]: async (job: Job<IEmailTokenInput>) => {
+const jobs: MyJobs = {
+  [Jobs.EMAIL_VERIFICATION]: async (job) => {
     await EmailService.sendVerificationEmail(job.data);
   },
-  [Jobs.FORGOT_PASSWORD]: async (job: Job<IEmailTokenInput>) => {
+  [Jobs.FORGOT_PASSWORD]: async (job) => {
     await EmailService.sendForgotPasswordEmail(job.data);
   },
-  [Jobs.TEAM_INVITATION]: async (job: Job<ISendInvitationEmail>) => {
+  [Jobs.TEAM_INVITATION]: async (job) => {
     await EmailService.sendInvitationEmail(job.data);
   }
 };
 
-async function init() {
+async function bootstrap() {
   checkEnv([
     "NODE_ENV",
     "SENDGRID_EMAIL",
@@ -41,17 +35,16 @@ async function init() {
     emailQueue.queueName,
     async (job) => {
       try {
-        await jobs[job.name]?.(job);
-      } catch (e) {
-        throw e;
-      }
+        await jobs[job.name as Jobs]?.(job);
+      } catch (e) {}
     },
     { connection: redis }
   );
   consola.info("Worker started");
 }
 
-init().catch((e) => {
+bootstrap().catch(async (e) => {
   console.log(e);
+  // await bootstrap();
   process.exit(1);
 });

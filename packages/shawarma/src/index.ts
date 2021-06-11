@@ -2,16 +2,24 @@ if (process.env.NODE_ENV !== "test") {
   require("dotenv-safe").config();
 }
 import "colors";
-import { checkEnv } from "@app/water";
+import { checkEnv, IInvite } from "@app/water";
 import { Server } from "http";
 import { app, passport, sessionmw } from "./app";
 import { mongodb } from "./config";
-import { logger, onSocketConnection, redis, start } from "./lib";
+import {
+  emitter,
+  logger,
+  onSocketConnection,
+  redis,
+  start,
+  SocketService
+} from "./lib";
 import { exitHandler } from "./utils";
 import { Server as SocketServer, Socket } from "socket.io";
 import { createAdapter } from "socket.io-redis";
 import { ExtendedError } from "socket.io/dist/namespace";
 import { Request } from "express";
+import { instrument } from "@socket.io/admin-ui";
 
 let _server: Server;
 
@@ -35,7 +43,7 @@ async function main() {
 
   const io = new SocketServer(_server, {
     cors: {
-      origin: process.env.KOFTE_URL,
+      origin: [process.env.KOFTE_URL, "https://admin.socket.io"],
       credentials: true
     },
     serveClient: false,
@@ -43,7 +51,7 @@ async function main() {
     pingInterval: 15000
   });
 
-  const wrap = (middleware: any) => (
+  const wrap = (middleware: Function) => (
     socket: Socket,
     next: (error: ExtendedError) => void
   ) => middleware(socket.request, {}, next);
@@ -68,6 +76,15 @@ async function main() {
   });
 
   io.on("connection", onSocketConnection(io));
+  const socketService = new SocketService(io);
+
+  instrument(io, { auth: false });
+
+  emitter.on("invite:new", ({ invite }: { invite: IInvite }) => {
+    socketService.emitIfExists(invite.invite_to_email, "invite:new", {
+      invite
+    });
+  });
 }
 
 main().catch((e) => {

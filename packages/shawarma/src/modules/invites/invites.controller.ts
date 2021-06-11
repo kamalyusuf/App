@@ -11,7 +11,8 @@ import {
   InternalServerError,
   NotAuthorizedError,
   NotFoundError,
-  BadRequestError
+  BadRequestError,
+  emitter
 } from "../../lib";
 import { TeamMember } from "../team-members";
 import { Team } from "../teams";
@@ -32,13 +33,16 @@ export const create: RequestHandler = async (req, res) => {
     permissions
   } as any);
 
-  await invite.populate("invited_by").populate("team").execPopulate();
+  await Promise.all([
+    invite.populate("invited_by").populate("team").execPopulate(),
+    emailQueue.queueTeamInvitation({
+      invited_by: invite.invited_by,
+      team: invite.team,
+      invite_to_email: invite.invite_to_email
+    })
+  ]);
 
-  await emailQueue.queueTeamInvitation({
-    invited_by: invite.invited_by,
-    team: invite.team,
-    invite_to_email: invite.invite_to_email
-  });
+  emitter.emit("invite:new", { invite });
 
   res.status(201).send(invite);
 };

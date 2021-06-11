@@ -4,3 +4,4 @@ export * from "./logger";
 export * from "./redis";
 export * from "./start";
 export * from "./socket";
+export * from "./emitter";

@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@app/water": "1.0.0",
+    "@socket.io/admin-ui": "^0.1.2",
     "argon2": "^0.27.2",
     "colors": "^1.4.0",
     "connect-redis": "^5.1.0",

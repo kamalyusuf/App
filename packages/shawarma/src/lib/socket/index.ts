@@ -1,10 +1,16 @@
 import { Server as SocketServer, Socket } from "socket.io";
-import * as socketService from "./socket.service";
+import { Request } from "express";
+export * from "./socket.service";
 
 export const onSocketConnection = (io: SocketServer) => (socket: Socket) => {
-  console.log(`Socket connected ${socket.id}`.green);
+  const user = (socket.request as Request).user!;
+  socket.join(user.email);
+
+  console.log(`${user.email} - ${socket.id} connected`.green);
 
   socket.on("disconnect", (reason) => {
-    console.log(`Socket ${socket.id} disconnected. Reason: ${reason}`.yellow);
+    console.log(
+      `${user.email} - ${socket.id} disconnected. Reason: ${reason}`.yellow
+    );
   });
 };

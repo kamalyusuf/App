@@ -5,7 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "../lib";
 import { ReactQueryDevtools } from "react-query/devtools";
-import React from "react";
+import React, { useEffect } from "react";
 import { ErrorToast } from "../modules/errors";
 import Router from "next/router";
 import NProgress from "nprogress";
@@ -21,6 +21,16 @@ Router.events.on("routeChangeError", () => NProgress.done());
 Axios.defaults.withCredentials = true;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
+  useEffect(() => {
+    if (Notification.permission === "granted") {
+      return;
+    }
+
+    (async () => {
+      await Notification.requestPermission();
+    })();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ChakraProvider>
