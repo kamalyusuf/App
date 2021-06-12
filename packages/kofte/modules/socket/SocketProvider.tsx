@@ -16,13 +16,15 @@ export const SocketContext = React.createContext<Context>({
 });
 
 const connect = (): Promise<Socket> => {
-  return new Promise<Socket>((resolve) => {
-    const socket = io(process.env.NEXT_PUBLIC_API_URL as string, {
-      withCredentials: true,
-      rememberUpgrade: true
-    });
+  const socket = io(process.env.NEXT_PUBLIC_API_URL as string, {
+    withCredentials: true,
+    rememberUpgrade: true
+  });
 
-    resolve(socket);
+  return new Promise<Socket>((resolve) => {
+    socket.on("connect", () => {
+      resolve(socket);
+    });
   });
 };
 
