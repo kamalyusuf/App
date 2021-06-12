@@ -2,9 +2,9 @@ import { Router } from "express";
 import {
   isAuthenticated,
   isVerified,
-  checkTeamName,
   checkValidationResult,
-  isValidObjectId
+  isValidObjectId,
+  checkString
 } from "../../middlewares";
 import * as TeamsController from "./teams.controller";
 import { teamMembersRouter } from "../team-members";
@@ -18,6 +18,15 @@ router.use(isAuthenticated, isVerified);
 router
   .route("/")
   .get(TeamsController.list)
-  .post([checkTeamName], checkValidationResult, TeamsController.create);
+  .post(
+    [
+      checkString("name", {
+        length: { min: 4, message: "Team name must be at least 5 characters" },
+        field_name: "Team name"
+      })
+    ],
+    checkValidationResult,
+    TeamsController.create
+  );
 
 router.get("/:id", isValidObjectId, TeamsController.listOne);

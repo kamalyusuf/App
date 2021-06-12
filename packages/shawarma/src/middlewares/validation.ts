@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { MinMaxOptions } from "express-validator/src/options";
 
 export const checkEmail = body("email")
   .exists()
@@ -8,41 +9,60 @@ export const checkEmail = body("email")
   .isEmail()
   .withMessage("Invalid email");
 
-export const checkPassword = body("password")
-  .exists()
-  .withMessage("Password is required")
-  .isLength({ min: 8 })
-  .withMessage("Password must be at least 8 characters");
-
-export const checkTeamName = body("name")
-  .exists()
-  .withMessage("Team name is required")
-  .trim()
-  .escape()
-  .isString()
-  .isLength({ min: 5 })
-  .withMessage("Team name must be at least 5 characters");
-
 interface Options {
   escape?: boolean;
+  length?: MinMaxOptions & { message?: string };
+  trim?: boolean;
+  field_name?: string;
 }
 
-export const generateBaseStringValidation = (
+export const checkString = (
   field: string,
-  { escape }: Options = { escape: true }
+  { escape = true, length, trim = true, field_name }: Options
 ) => {
   let base = body(field)
     .exists()
-    .withMessage(`${field} is required`)
+    .withMessage(`${field_name || field} is required`)
     .isString()
     .withMessage("Invalid data type")
     .not()
     .isEmpty()
-    .withMessage(`${field} is required`)
-    .trim();
+    .withMessage(`${field_name || field} is required`);
 
   if (escape) {
     base = base.escape();
+  }
+
+  if (length) {
+    const options: MinMaxOptions = {};
+    let message: string;
+
+    if (length.min) {
+      options.min = length.min;
+    }
+    if (length.max) {
+      options.max = length.max;
+    }
+
+    if (options.min && options.max) {
+      message = `${field_name || field} must be between ${options.min} and ${
+        options.max
+      } characters`;
+    } else if (options.min && !options.max) {
+      message = `${field_name || field} must be at least ${
+        options.min
+      } characters`;
+    } else {
+      message = `${field_name || field} must not exceed ${
+        options.max
+      } characters`;
+    }
+
+    base = base.isLength(options).withMessage(length.message || message);
+  }
+
+  if (trim) {
+    base = base.trim();
   }
 
   return base;

@@ -1,10 +1,10 @@
 import {
   checkEmail,
-  checkPassword,
   guest,
   checkValidationResult,
   isAuthenticated,
-  isUnauthenticated
+  isUnauthenticated,
+  checkString
 } from "./../../middlewares";
 import { Router } from "express";
 import { generateRateLimiter, generateSpeedLimiter } from "../../utils";
@@ -16,7 +16,13 @@ router.post(
   "/signup",
   generateRateLimiter({ max: 5, duration: 3600 }),
   guest,
-  [checkEmail, checkPassword],
+  [
+    checkEmail,
+    checkString("password", {
+      length: { min: 8, message: "Password must be at least 8 characters" },
+      trim: false
+    })
+  ],
   checkValidationResult,
   AuthController.signup
 );
@@ -53,7 +59,12 @@ router.post(
 
 router.post(
   "/reset",
-  [checkPassword],
+  [
+    checkString("password", {
+      length: { min: 8, message: "Password must be at least 8 characters" },
+      trim: false
+    })
+  ],
   checkValidationResult,
   AuthController.resetPassword
 );

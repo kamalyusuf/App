@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
+  checkString,
   checkValidationResult,
-  generateBaseStringValidation,
   isAuthenticated,
   reject
 } from "../../middlewares";
@@ -16,9 +16,9 @@ router
     reject,
     isAuthenticated,
     [
-      generateBaseStringValidation("label"),
-      generateBaseStringValidation("value"),
-      generateBaseStringValidation("link", { escape: false })
+      checkString("label", {}),
+      checkString("value", {}),
+      checkString("link", { escape: false })
     ],
     checkValidationResult,
     ProvidersController.create
