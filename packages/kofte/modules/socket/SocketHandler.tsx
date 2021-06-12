@@ -24,10 +24,12 @@ export const SocketHandler: React.FC = () => {
         }
       });
 
-      queryClient.setQueryData<IInvite[] | undefined>("/invites", (invites) => {
-        if (!invites) return;
-        return [invite, ...invites];
-      });
+      queryClient.setQueryData<IInvite[] | undefined>(
+        "/invites",
+        (invites = []) => {
+          return [invite, ...invites];
+        }
+      );
     });
 
     socket.on("invite:accept", ({ invite }: { invite: IInvite }) => {
